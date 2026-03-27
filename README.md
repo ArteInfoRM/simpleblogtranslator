@@ -22,7 +22,7 @@ PrestaShop module that translates **PrestaHome SimpleBlog** articles using the *
 
 | Dependency | Version |
 |---|---|
-| PrestaShop | ≥ 1.7.8.0 |
+| PrestaShop | 1.7.8 → **9.x** (tested on PS9) |
 | PHP | ≥ 8.1 |
 | SimpleBlog for PrestaShop | any recent version |
 | OpenAI API key **or** Anthropic API key | — |
@@ -72,10 +72,10 @@ The queue runs sequentially. Progress, per-article status and any errors are sho
 ## Supported models
 
 ### OpenAI
-`gpt-4o-mini` · `gpt-4o` · `gpt-4.1` · `gpt-4.1-mini` · `gpt-4.1-nano` · `gpt-4-turbo` · `gpt-3.5-turbo` · `gpt-5` · `gpt-5-mini`
+`gpt-5.4` · `gpt-5.4-mini` · `gpt-5.4-nano` · `gpt-5` · `gpt-5-mini` · `gpt-4.1` · `gpt-4.1-mini` *(recommended)* · `gpt-4.1-nano` · `gpt-4o` · `gpt-4o-mini`
 
 ### Anthropic
-`claude-haiku-4-5-20251001` · `claude-sonnet-4-5-20250929` · `claude-opus-4-5-20251101` · `claude-sonnet-4-6` · `claude-opus-4-6`
+`claude-haiku-4-5-20251001` *(recommended)* · `claude-sonnet-4-5-20250929` · `claude-sonnet-4-6` · `claude-opus-4-6`
 
 ---
 
