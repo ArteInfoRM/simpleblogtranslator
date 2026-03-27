@@ -1,0 +1,41 @@
+# ── OS / editor artefacts ────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── IDE ──────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ── PHP / Composer ───────────────────────────────────────────────────────────
+vendor/
+composer.lock
+
+# ── Node (if any tooling is added) ───────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ── Build / dist artefacts ───────────────────────────────────────────────────
+/dist/
+*.zip
+
+# ── PrestaShop runtime files (should not be committed) ───────────────────────
+config.xml
+config_*.xml
+
+# ── Secrets / environment ─────────────────────────────────────────────────────
+.env
+.env.*
+*.key
