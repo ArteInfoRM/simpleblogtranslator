@@ -43,10 +43,10 @@
 <script>
 (function ($) {
 
-    /* ── Provider ↔ Model filter ─────────────────────────────────────────
-       Hide/show on <option> is not reliable in Chrome — we rebuild the
+    /* -- Provider <-> Model filter -----------------------------------------
+       Hide/show on <option> is not reliable in Chrome - we rebuild the
        select each time from a stored snapshot of all options.
-    ──────────────────────────────────────────────────────────────────── */
+    -------------------------------------------------------------------- */
     $(document).ready(function () {
         var $provider = $('#SIMPLEBLOGTRANSLATOR_PROVIDER');
         var $model    = $('#SIMPLEBLOGTRANSLATOR_MODEL');
@@ -84,7 +84,7 @@
         $provider.on('change', filterModels);
     });
 
-    /* ── API test button ─────────────────────────────────────────────── */
+    /* -- API test button ----------------------------------------------- */
     $('#sbt-test-api-btn').on('click', function () {
         var $btn     = $(this);
         var $spinner = $('#sbt-test-spinner');

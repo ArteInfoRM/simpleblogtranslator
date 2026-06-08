@@ -1,5 +1,5 @@
 {*
- * SimpleBlog Translator – Main admin template
+ * SimpleBlog Translator - Main admin template
  *
  * @author    Custom
  * @copyright 2024 Custom
@@ -12,9 +12,9 @@
 
 <div class="sbt-wrap">
 
-{* ══════════════════════════════════════════════════════════════════════
+{* ----------------------------------------------------------------------
    PAGE HEADER
-══════════════════════════════════════════════════════════════════════ *}
+---------------------------------------------------------------------- *}
 <div class="page-head clearfix" style="margin-bottom:16px;">
     <h2 class="page-title" style="margin:0 0 4px;">
         <i class="icon-language"></i>
@@ -35,9 +35,9 @@
 </div>
 {/if}
 
-{* ══════════════════════════════════════════════════════════════════════
+{* ----------------------------------------------------------------------
    TRANSLATION OPTIONS PANEL
-══════════════════════════════════════════════════════════════════════ *}
+---------------------------------------------------------------------- *}
 <div class="panel" id="sbt-options-panel">
     <div class="panel-heading">
         <i class="icon-cog"></i> {l s='Translation Options' mod='simpleblogtranslator'}
@@ -136,9 +136,9 @@
     </div>
 </div>
 
-{* ══════════════════════════════════════════════════════════════════════
+{* ----------------------------------------------------------------------
    PROGRESS BAR
-══════════════════════════════════════════════════════════════════════ *}
+---------------------------------------------------------------------- *}
 <div id="sbt-progress-panel" class="panel" style="display:none;">
     <div class="panel-body">
         <div class="sbt-progress-header clearfix">
@@ -162,9 +162,9 @@
 {* Alert container *}
 <div id="sbt-alert-container" style="display:none;"></div>
 
-{* ══════════════════════════════════════════════════════════════════════
+{* ----------------------------------------------------------------------
    ARTICLES GRID
-══════════════════════════════════════════════════════════════════════ *}
+---------------------------------------------------------------------- *}
 <div class="panel">
     <div class="panel-heading clearfix">
         <div class="sbt-panel-title-left">
@@ -196,7 +196,7 @@
         </div>
     </div>
 
-    {* ── Search / Filter / Sort bar ──────────────────────────────────────── *}
+    {* -- Search / Filter / Sort bar ---------------------------------------- *}
     <div class="sbt-search-bar">
         <form method="get" id="sbt-search-form" class="sbt-search-form">
             <input type="hidden" name="controller"   value="AdminSimpleBlogTranslator">
@@ -277,7 +277,7 @@
                         <input type="checkbox" id="sbt-check-all">
                     </th>
                     <th class="sbt-col-id sbt-sortable">
-                        <a href="{$sbt_pagination_base_url}&amp;p=1&amp;order_by={if $sbt_order_by == 'id_desc'}id_asc{else}id_desc{/if}">
+                        <a href="{$sbt_pagination_base_url|escape:'html':'UTF-8'}&amp;p=1&amp;order_by={if $sbt_order_by == 'id_desc'}id_asc{else}id_desc{/if}">
                             ID
                             {if $sbt_order_by == 'id_asc'}<i class="icon-caret-up"></i>
                             {elseif $sbt_order_by == 'id_desc'}<i class="icon-caret-down"></i>
@@ -383,7 +383,7 @@
         </table>
     </div>{* /table-responsive *}
 
-    {* ── Pagination ─────────────────────────────────────────────────────── *}
+    {* Pagination *}
     {* sbt_pagination_base_url is built entirely in PHP (controller)        *}
     {* to avoid Smarty 3 {assign} with embedded variable interpolation      *}
     {if $sbt_total_pages > 1}
@@ -403,7 +403,7 @@
 
                     {* First *}
                     <li{if $sbt_page <= 1} class="disabled"{/if}>
-                        <a href="{$sbt_pagination_base_url}&amp;p=1" aria-label="First">
+                        <a href="{$sbt_pagination_base_url|escape:'html':'UTF-8'}&amp;p=1" aria-label="First">
                             <i class="icon-step-backward"></i>
                         </a>
                     </li>
@@ -411,11 +411,11 @@
                     {* Prev *}
                     <li{if $sbt_page <= 1} class="disabled"{/if}>
                         {if $sbt_page > 1}
-                            <a href="{$sbt_pagination_base_url}&amp;p={math equation='x-1' x=$sbt_page}">
+                            <a href="{$sbt_pagination_base_url|escape:'html':'UTF-8'}&amp;p={math equation='x-1' x=$sbt_page}">
                                 <i class="icon-chevron-left"></i>
                             </a>
                         {else}
-                            <a href="{$sbt_pagination_base_url}&amp;p=1">
+                            <a href="{$sbt_pagination_base_url|escape:'html':'UTF-8'}&amp;p=1">
                                 <i class="icon-chevron-left"></i>
                             </a>
                         {/if}
@@ -423,7 +423,7 @@
 
                     {* Ellipsis before window *}
                     {if $sbt_win_start > 1}
-                        <li><a href="{$sbt_pagination_base_url}&amp;p=1">1</a></li>
+                        <li><a href="{$sbt_pagination_base_url|escape:'html':'UTF-8'}&amp;p=1">1</a></li>
                         {if $sbt_win_start > 2}
                             <li class="disabled"><a href="#">...</a></li>
                         {/if}
@@ -432,7 +432,7 @@
                     {* Page buttons *}
                     {foreach $sbt_pagination_pages as $ppage}
                         <li{if $ppage == $sbt_page} class="active"{/if}>
-                            <a href="{$sbt_pagination_base_url}&amp;p={$ppage|intval}">
+                            <a href="{$sbt_pagination_base_url|escape:'html':'UTF-8'}&amp;p={$ppage|intval}">
                                 {$ppage|intval}
                             </a>
                         </li>
@@ -444,7 +444,7 @@
                             <li class="disabled"><a href="#">...</a></li>
                         {/if}
                         <li>
-                            <a href="{$sbt_pagination_base_url}&amp;p={$sbt_total_pages|intval}">
+                            <a href="{$sbt_pagination_base_url|escape:'html':'UTF-8'}&amp;p={$sbt_total_pages|intval}">
                                 {$sbt_total_pages|intval}
                             </a>
                         </li>
@@ -453,11 +453,11 @@
                     {* Next *}
                     <li{if $sbt_page >= $sbt_total_pages} class="disabled"{/if}>
                         {if $sbt_page < $sbt_total_pages}
-                            <a href="{$sbt_pagination_base_url}&amp;p={math equation='x+1' x=$sbt_page}">
+                            <a href="{$sbt_pagination_base_url|escape:'html':'UTF-8'}&amp;p={math equation='x+1' x=$sbt_page}">
                                 <i class="icon-chevron-right"></i>
                             </a>
                         {else}
-                            <a href="{$sbt_pagination_base_url}&amp;p={$sbt_total_pages|intval}">
+                            <a href="{$sbt_pagination_base_url|escape:'html':'UTF-8'}&amp;p={$sbt_total_pages|intval}">
                                 <i class="icon-chevron-right"></i>
                             </a>
                         {/if}
@@ -465,7 +465,7 @@
 
                     {* Last *}
                     <li{if $sbt_page >= $sbt_total_pages} class="disabled"{/if}>
-                        <a href="{$sbt_pagination_base_url}&amp;p={$sbt_total_pages|intval}" aria-label="Last">
+                        <a href="{$sbt_pagination_base_url|escape:'html':'UTF-8'}&amp;p={$sbt_total_pages|intval}" aria-label="Last">
                             <i class="icon-step-forward"></i>
                         </a>
                     </li>
@@ -489,9 +489,9 @@
 
 </div>{* /sbt-wrap *}
 
-{* ══════════════════════════════════════════════════════════════════════
+{* ----------------------------------------------------------------------
    FIXED BOTTOM ACTION BAR
-══════════════════════════════════════════════════════════════════════ *}
+---------------------------------------------------------------------- *}
 <div id="sbt-action-bar">
     <div class="sbt-action-inner">
         <div class="sbt-action-info">

@@ -1,4 +1,4 @@
-# ── OS / editor artefacts ────────────────────────────────────────────────────
+# OS / editor artefacts
 .DS_Store
 .DS_Store?
 ._*
@@ -8,7 +8,7 @@ ehthumbs.db
 Thumbs.db
 desktop.ini
 
-# ── IDE ──────────────────────────────────────────────────────────────────────
+# IDE
 .idea/
 .vscode/
 *.sublime-project
@@ -17,25 +17,26 @@ desktop.ini
 *.swo
 *~
 
-# ── PHP / Composer ───────────────────────────────────────────────────────────
+# PHP / Composer
 vendor/
 composer.lock
 
-# ── Node (if any tooling is added) ───────────────────────────────────────────
+# Node (if any tooling is added)
 node_modules/
 npm-debug.log*
 yarn-error.log*
 package-lock.json
 
-# ── Build / dist artefacts ───────────────────────────────────────────────────
+# Build / dist artefacts
 /dist/
 *.zip
+*_validation_*.txt
 
-# ── PrestaShop runtime files (should not be committed) ───────────────────────
+# PrestaShop runtime files (should not be committed)
 config.xml
 config_*.xml
 
-# ── Secrets / environment ─────────────────────────────────────────────────────
+# Secrets / environment
 .env
 .env.*
 *.key

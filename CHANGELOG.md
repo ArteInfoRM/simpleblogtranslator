@@ -7,6 +7,14 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.2] — 2026-06-08
+
+### Fixed
+- Addressed PrestaShop validator warnings for directory guards, Smarty escaping, translation array syntax, and formatting.
+- Fixed OpenAI translation failures with newer GPT models by using `max_completion_tokens`, omitting unsupported temperature parameters, and surfacing the provider error in AJAX responses.
+
+---
+
 ## [1.1.1] — 2026-06-08
 
 ### Changed

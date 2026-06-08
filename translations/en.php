@@ -1,7 +1,7 @@
 <?php
 
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{simpleblogtranslator}prestashop>simpleblogtranslator_3802028b9fd36aec554ce5af23c39217'] = 'SimpleBlog Translator';
 $_MODULE['<{simpleblogtranslator}prestashop>simpleblogtranslator_2f100ac8f5b4f01143b8504d6b1bd147'] = 'Translate PrestaHome Blog articles using OpenAI or Anthropic AI API';
 $_MODULE['<{simpleblogtranslator}prestashop>simpleblogtranslator_87147d7246e7b50c2a0382f287e0412f'] = 'Anthropic API Key is required when Anthropic is selected as provider.';

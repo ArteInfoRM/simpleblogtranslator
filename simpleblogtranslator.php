@@ -6,7 +6,6 @@
  * @copyright 2026 Tecnoacquisti.com
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -19,7 +18,7 @@ class SimpleBlogTranslator extends Module
     {
         $this->name = 'simpleblogtranslator';
         $this->tab = 'administration';
-        $this->version = '1.1.1';
+        $this->version = '1.1.2';
         $this->author = 'Tecnoacquisti.com';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -105,7 +104,7 @@ class SimpleBlogTranslator extends Module
     {
         $db = Db::getInstance();
 
-        // Use "Improve > Modules" – a native PS tab present in all versions 1.7.x to 9.x
+        // Use "Improve > Modules" - a native PS tab present in all versions 1.7.x to 9.x
         // class_name is AdminParentModulesSf on 1.7+ (falls back to AdminModules on older builds)
         foreach (['AdminParentModulesSf', 'AdminModules'] as $className) {
             $id = (int) $db->getValue(
@@ -151,7 +150,7 @@ class SimpleBlogTranslator extends Module
     /* ------------------------------------------------------------------ */
 
     /**
-     * Hook called on every BO page load – keeps the tab under Blog for PrestaShop
+     * Hook called on every BO page load - keeps the tab under Blog for PrestaShop
      * even if this module was installed before simpleblog.
      */
     public function hookActionAdminControllerSetMedia()
@@ -170,18 +169,18 @@ class SimpleBlogTranslator extends Module
             $output .= $this->processConfigForm();
         }
 
-        $translatorUrl    = $this->context->link->getAdminLink('AdminSimpleBlogTranslator');
-        $savedKey         = (string) Configuration::get(self::CFG . 'API_KEY');
+        $translatorUrl = $this->context->link->getAdminLink('AdminSimpleBlogTranslator');
+        $savedKey = (string) Configuration::get(self::CFG . 'API_KEY');
         $savedAnthropicKey = (string) Configuration::get(self::CFG . 'ANTHROPIC_API_KEY');
         $useSsl = (bool) Configuration::get('PS_SSL_ENABLED_EVERYWHERE') || (bool) Configuration::get('PS_SSL_ENABLED');
 
         $this->context->smarty->assign([
-            'sbt_translator_url'    => $translatorUrl,
-            'sbt_has_api_key'       => $savedKey !== '',
+            'sbt_translator_url' => $translatorUrl,
+            'sbt_has_api_key' => $savedKey !== '',
             'sbt_has_anthropic_key' => $savedAnthropicKey !== '',
-            'sbt_ajax_url'          => $this->context->link->getAdminLink('AdminSimpleBlogTranslator', false),
-            'sbt_ajax_token'        => Tools::getAdminTokenLite('AdminSimpleBlogTranslator'),
-            'shop_base_url'         => $this->context->link->getBaseLink((int) $this->context->shop->id, $useSsl),
+            'sbt_ajax_url' => $this->context->link->getAdminLink('AdminSimpleBlogTranslator', false),
+            'sbt_ajax_token' => Tools::getAdminTokenLite('AdminSimpleBlogTranslator'),
+            'shop_base_url' => $this->context->link->getBaseLink((int) $this->context->shop->id, $useSsl),
         ]);
 
         $tplPath = _PS_MODULE_DIR_ . $this->name . '/views/templates/admin/configure.tpl';
@@ -195,12 +194,12 @@ class SimpleBlogTranslator extends Module
     {
         $errors = [];
 
-        $provider    = Tools::getValue(self::CFG . 'PROVIDER', 'openai');
-        $apiKey      = trim(Tools::getValue(self::CFG . 'API_KEY', ''));
+        $provider = Tools::getValue(self::CFG . 'PROVIDER', 'openai');
+        $apiKey = trim(Tools::getValue(self::CFG . 'API_KEY', ''));
         $anthropicKey = trim(Tools::getValue(self::CFG . 'ANTHROPIC_API_KEY', ''));
-        $model       = Tools::getValue(self::CFG . 'MODEL', 'gpt-4o-mini');
+        $model = Tools::getValue(self::CFG . 'MODEL', 'gpt-4o-mini');
         $temperature = Tools::getValue(self::CFG . 'TEMPERATURE', '0');
-        $phrase      = trim(Tools::getValue(self::CFG . 'PHRASE', ''));
+        $phrase = trim(Tools::getValue(self::CFG . 'PHRASE', ''));
 
         // If a key field was left blank or masked, keep the existing saved key
         if ($apiKey === '' || strpos($apiKey, '•') !== false) {
@@ -287,54 +286,54 @@ class SimpleBlogTranslator extends Module
                 'legend' => ['title' => $this->l('AI API Configuration'), 'icon' => 'icon-cogs'],
                 'input' => [
                     [
-                        'type'    => 'select',
-                        'label'   => $this->l('AI Provider'),
-                        'name'    => self::CFG . 'PROVIDER',
+                        'type' => 'select',
+                        'label' => $this->l('AI Provider'),
+                        'name' => self::CFG . 'PROVIDER',
                         'options' => ['query' => $providers, 'id' => 'id', 'name' => 'name'],
-                        'desc'    => $this->l('Select which AI provider to use for translations.'),
+                        'desc' => $this->l('Select which AI provider to use for translations.'),
                     ],
                     [
-                        'type'  => 'text',
+                        'type' => 'text',
                         'label' => $this->l('OpenAI API Key'),
-                        'name'  => self::CFG . 'API_KEY',
-                        'desc'  => $this->l(
+                        'name' => self::CFG . 'API_KEY',
+                        'desc' => $this->l(
                             'Your OpenAI secret key (starts with sk-…). '
                             . 'Shown masked. Leave unchanged to keep the existing key. '
                             . 'Paste a new key to replace it.'
                         ),
                     ],
                     [
-                        'type'  => 'text',
+                        'type' => 'text',
                         'label' => $this->l('Anthropic API Key'),
-                        'name'  => self::CFG . 'ANTHROPIC_API_KEY',
-                        'desc'  => $this->l(
+                        'name' => self::CFG . 'ANTHROPIC_API_KEY',
+                        'desc' => $this->l(
                             'Your Anthropic secret key (starts with sk-ant-…). '
                             . 'Shown masked. Leave unchanged to keep the existing key. '
                             . 'Paste a new key to replace it.'
                         ),
                     ],
                     [
-                        'type'    => 'select',
-                        'label'   => $this->l('Model'),
-                        'name'    => self::CFG . 'MODEL',
+                        'type' => 'select',
+                        'label' => $this->l('Model'),
+                        'name' => self::CFG . 'MODEL',
                         'options' => ['query' => $models, 'id' => 'id', 'name' => 'name'],
-                        'desc'    => $this->l('Select a model matching the chosen provider. For Anthropic, start with Haiku (accessible on all tiers).'),
+                        'desc' => $this->l('Select a model matching the chosen provider. For Anthropic, start with Haiku (accessible on all tiers).'),
                     ],
                     [
-                        'type'  => 'text',
+                        'type' => 'text',
                         'label' => $this->l('Temperature'),
-                        'name'  => self::CFG . 'TEMPERATURE',
-                        'col'   => 2,
-                        'desc'  => $this->l(
+                        'name' => self::CFG . 'TEMPERATURE',
+                        'col' => 2,
+                        'desc' => $this->l(
                             '0 = deterministic/precise, 1 = balanced, 2 = creative (OpenAI only). '
                             . 'Anthropic max is 1. Recommended: 0'
                         ),
                     ],
                     [
-                        'type'   => 'switch',
-                        'label'  => $this->l('Debug Mode'),
-                        'name'   => self::CFG . 'DEBUG',
-                        'desc'   => $this->l(
+                        'type' => 'switch',
+                        'label' => $this->l('Debug Mode'),
+                        'name' => self::CFG . 'DEBUG',
+                        'desc' => $this->l(
                             'Write detailed debug info to PrestaShop logs (Logger). '
                             . 'Disable in production.'
                         ),
@@ -344,12 +343,12 @@ class SimpleBlogTranslator extends Module
                         ],
                     ],
                     [
-                        'type'  => 'textarea',
+                        'type' => 'textarea',
                         'label' => $this->l('Translation Phrase (System Prompt)'),
-                        'name'  => self::CFG . 'PHRASE',
-                        'rows'  => 4,
-                        'cols'  => 80,
-                        'desc'  => $this->l('System prompt sent to the AI. Must contain [from_lang] and [to_lang].'),
+                        'name' => self::CFG . 'PHRASE',
+                        'rows' => 4,
+                        'cols' => 80,
+                        'desc' => $this->l('System prompt sent to the AI. Must contain [from_lang] and [to_lang].'),
                     ],
                 ],
                 'submit' => ['title' => $this->l('Save'), 'class' => 'btn btn-default pull-right'],
@@ -372,16 +371,16 @@ class SimpleBlogTranslator extends Module
         $helper->token = Tools::getAdminTokenLite('AdminModules');
 
         $cfgPhrase = Configuration::get(self::CFG . 'PHRASE');
-        $cfgTemp   = Configuration::get(self::CFG . 'TEMPERATURE');
+        $cfgTemp = Configuration::get(self::CFG . 'TEMPERATURE');
 
         $helper->fields_value = [
-            self::CFG . 'PROVIDER'         => Configuration::get(self::CFG . 'PROVIDER') ?: 'openai',
-            self::CFG . 'API_KEY'          => $maskedKey,
+            self::CFG . 'PROVIDER' => Configuration::get(self::CFG . 'PROVIDER') ?: 'openai',
+            self::CFG . 'API_KEY' => $maskedKey,
             self::CFG . 'ANTHROPIC_API_KEY' => $maskedAnthropicKey,
-            self::CFG . 'MODEL'            => Configuration::get(self::CFG . 'MODEL') ?: 'gpt-4o-mini',
-            self::CFG . 'DEBUG'            => (int) Configuration::get(self::CFG . 'DEBUG'),
-            self::CFG . 'TEMPERATURE'      => ($cfgTemp !== false) ? $cfgTemp : '0',
-            self::CFG . 'PHRASE'           => $cfgPhrase ?: '',
+            self::CFG . 'MODEL' => Configuration::get(self::CFG . 'MODEL') ?: 'gpt-4o-mini',
+            self::CFG . 'DEBUG' => (int) Configuration::get(self::CFG . 'DEBUG'),
+            self::CFG . 'TEMPERATURE' => ($cfgTemp !== false) ? $cfgTemp : '0',
+            self::CFG . 'PHRASE' => $cfgPhrase ?: '',
         ];
 
         return $helper->generateForm($fieldsForm);

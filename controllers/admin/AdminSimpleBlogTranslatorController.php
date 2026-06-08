@@ -1,12 +1,11 @@
 <?php
 /**
- * SimpleBlog Translator – Admin Controller
+ * SimpleBlog Translator - Admin Controller
  *
  * @author    Custom
  * @copyright 2024 Custom
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -26,35 +25,17 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
         $this->meta_title = 'Blog Translator';
     }
 
-    /* ================================================================== */
-    /* initContent                                                          */
-    /*                                                                      */
-    /* In PS 1.7.x the call chain is:                                      */
-    /*   initContent()                                                      */
-    /*     -> parent::initContent()                                         */
-    /*        -> $this->content .= $this->renderView()   <-- our override  */
-    /*        -> smarty->assign('content', $this->content)                 */
-    /*                                                                      */
-    /* Therefore:                                                           */
-    /*  1. We must prepare all Smarty vars BEFORE calling parent.           */
-    /*  2. We must return the rendered HTML from renderView(), NOT set      */
-    /*     $this->content after parent (it would be too late).              */
-    /* ================================================================== */
-
     public function initContent()
     {
-        // AJAX handler – exits before the normal page render
+        // AJAX handler exits before the normal page render.
         if (Tools::getValue('ajax') && Tools::getValue('action')) {
             $this->handleAjax();
-            // handleAjax() calls exit internally
         }
 
-        // ── Assets ──────────────────────────────────────────────────────
         $moduleUri = $this->module->getPathUri();
         $this->addCSS($moduleUri . 'views/css/simpleblogtranslator.css');
         $this->addJS($moduleUri . 'views/js/simpleblogtranslator.js?v=1.0.4');
 
-        // ── Request params ───────────────────────────────────────────────
         $sourceLangId = (int) Tools::getValue('source_lang', (int) Configuration::get('PS_LANG_DEFAULT'));
         $targetLangs = Tools::getValue('target_langs', []);
         $translateContent = (bool) Tools::getValue('translate_content', false);
@@ -65,15 +46,14 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
         }
 
         // Search / filter / sort
-        $searchTitle  = trim(Tools::getValue('search_title', ''));
+        $searchTitle = trim(Tools::getValue('search_title', ''));
         $filterActive = Tools::getValue('filter_active', '');   // '', '1', '0'
-        $orderBy      = Tools::getValue('order_by', 'date_desc');
+        $orderBy = Tools::getValue('order_by', 'date_desc');
         $allowedOrder = ['id_asc', 'id_desc', 'date_asc', 'date_desc'];
         if (!in_array($orderBy, $allowedOrder)) {
             $orderBy = 'date_desc';
         }
 
-        // ── Data ─────────────────────────────────────────────────────────
         $allLanguages = Language::getLanguages(true);
         $postsData = $this->getBlogPosts($sourceLangId, $page, $perPage, $searchTitle, $filterActive, $orderBy);
         $total = $postsData['total'];
@@ -83,7 +63,6 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
         $winEnd = min($totalPages, $page + 2);
         $paginationPages = range($winStart, $winEnd);
 
-        // ── Language map { id_lang: "name" } ─────────────────────────────
         $langMap = [];
         foreach ($allLanguages as $l) {
             $langMap[(int) $l['id_lang']] = $l['name'];
@@ -91,12 +70,12 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
 
         $baseUrl = $this->context->link->getAdminLink('AdminSimpleBlogTranslator');
 
-        // Pagination base URL built in PHP – avoids Smarty 3 {assign} with embedded vars
+        // Pagination base URL built in PHP - avoids Smarty 3 {assign} with embedded vars
         $paginationBaseUrl = $baseUrl
             . '&amp;per_page=' . $perPage
             . '&amp;source_lang=' . $sourceLangId;
 
-        // ── JS config via Media::addJsDef (official PS way) ───────────────
+        // -- JS config via Media::addJsDef (official PS way) ---------------
         // Must be called BEFORE parent::initContent() which flushes the JS header
         Media::addJsDef([
             'SBT' => [
@@ -119,7 +98,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
             ],
         ]);
 
-        // ── Smarty assigns BEFORE parent::initContent() ───────────────────
+        // -- Smarty assigns BEFORE parent::initContent() -------------------
         // parent::initContent() calls renderView() which uses these vars,
         // then assigns the result to 'content' in the Smarty layout context.
         // Any assign done AFTER parent() would be too late.
@@ -150,20 +129,20 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
             ),
             'sbt_per_page_options' => self::PER_PAGE_OPTIONS,
             // search / filter / sort
-            'sbt_search_title'  => $searchTitle,
+            'sbt_search_title' => $searchTitle,
             'sbt_filter_active' => $filterActive,
-            'sbt_order_by'      => $orderBy,
+            'sbt_order_by' => $orderBy,
         ]);
 
         // Tell PS 1.7 to call renderView() instead of the default renderList()
         $this->display = 'view';
 
-        // Call parent LAST – it invokes renderView() and assigns result to layout
+        // Call parent LAST - it invokes renderView() and assigns result to layout
         parent::initContent();
     }
 
     /* ================================================================== */
-    /* renderView – called by parent::initContent(), result goes to layout  */
+    /* renderView - called by parent::initContent(), result goes to layout  */
     /* ================================================================== */
 
     public function renderView()
@@ -189,7 +168,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
             );
 
             return '<div class="alert alert-danger">'
-                . '<strong>SimpleBlog Translator – Template Error:</strong> '
+                . '<strong>SimpleBlog Translator - Template Error:</strong> '
                 . htmlspecialchars($e->getMessage())
                 . '</div>';
         }
@@ -217,10 +196,10 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
 
             // ORDER BY
             $orderMap = [
-                'id_asc'   => 'p.`id_simpleblog_post` ASC',
-                'id_desc'  => 'p.`id_simpleblog_post` DESC',
+                'id_asc' => 'p.`id_simpleblog_post` ASC',
+                'id_desc' => 'p.`id_simpleblog_post` DESC',
                 'date_asc' => 'p.`date_add` ASC',
-                'date_desc'=> 'p.`date_add` DESC',
+                'date_desc' => 'p.`date_add` DESC',
             ];
             $orderSql = $orderMap[$orderBy];
 
@@ -278,7 +257,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
                 $pid = (int) $post['id_simpleblog_post'];
                 $post['translated_langs'] = isset($transMap[$pid]) ? $transMap[$pid] : [];
                 $post['categories'] = isset($catsMap[$pid]) ? $catsMap[$pid] : [];
-                // Detect Elementor/JSON content in PHP – more reliable than SQL IF()
+                // Detect Elementor/JSON content in PHP - more reliable than SQL IF()
                 $post['content_is_json'] = $this->detectJsonContent($postIds, (int) $idLang, $pid);
             }
             unset($post);
@@ -416,7 +395,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
         $translateContent = (bool) Tools::getValue('translate_content', false);
         $regenMeta = (bool) Tools::getValue('regen_meta', false);
 
-        $this->dbg("processTranslation called — post=$idPost src=$sourceLangId tgt=$targetLangId regen=$regenMeta translate_content=$translateContent");
+        $this->dbg("processTranslation called - post=$idPost src=$sourceLangId tgt=$targetLangId regen=$regenMeta translate_content=$translateContent");
 
         if (!$idPost || !$sourceLangId || !$targetLangId) {
             return ['success' => false, 'message' => 'Missing parameters'];
@@ -584,19 +563,19 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
      */
     private function processRegenMeta($idPost, $sourceLangId, $targetLangId, $source, $apiKey)
     {
-        $provider    = Configuration::get('SIMPLEBLOGTRANSLATOR_PROVIDER') ?: 'openai';
+        $provider = Configuration::get('SIMPLEBLOGTRANSLATOR_PROVIDER') ?: 'openai';
         $defaultModel = ($provider === 'anthropic') ? 'claude-haiku-4-5-20251001' : 'gpt-4o-mini';
-        $model       = Configuration::get('SIMPLEBLOGTRANSLATOR_MODEL') ?: $defaultModel;
+        $model = Configuration::get('SIMPLEBLOGTRANSLATOR_MODEL') ?: $defaultModel;
         $temperature = (float) (Configuration::get('SIMPLEBLOGTRANSLATOR_TEMPERATURE') ?: 0);
-        $targetLang  = new Language($targetLangId);
+        $targetLang = new Language($targetLangId);
 
         // If target == source we regenerate in the source language itself
         $langName = $targetLang->name;
 
-        // Build clean text – use only title + short_content to avoid Elementor JSON noise
-        $this->dbg("processRegenMeta — post=$idPost src=$sourceLangId tgt=$targetLangId lang={$targetLang->name}");
+        // Build clean text using only title and short_content to avoid Elementor JSON noise.
+        $this->dbg('processRegenMeta - post=' . $idPost . ' src=' . $sourceLangId . ' tgt=' . $targetLangId . ' lang=' . $targetLang->name);
 
-        $title        = trim(strip_tags(isset($source['title'])         ? $source['title']         : ''));
+        $title = trim(strip_tags(isset($source['title'])         ? $source['title']         : ''));
         $shortContent = trim(strip_tags(isset($source['short_content']) ? $source['short_content'] : ''));
 
         // Fallback: if short_content is also empty or JSON, use first 400 chars of content stripped
@@ -611,8 +590,8 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
 
         $prompt = $this->buildSeoPrompt($title, $shortContent, $langName);
 
-        $this->dbg("Prompt built — title=" . mb_substr($title, 0, 60) . " | shortContent=" . mb_substr($shortContent, 0, 60) . " | lang=$langName");
-        $this->dbg("Full prompt sent to API: " . mb_substr($prompt, 0, 400));
+        $this->dbg('Prompt built - title=' . mb_substr($title, 0, 60) . ' | shortContent=' . mb_substr($shortContent, 0, 60) . ' | lang=' . $langName);
+        $this->dbg('Full prompt sent to API: ' . mb_substr($prompt, 0, 400));
 
         if ($provider === 'anthropic') {
             $raw = $this->callAnthropicRaw($apiKey, $model, $temperature, $prompt);
@@ -624,14 +603,14 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
             return ['success' => false, 'message' => 'AI API error during meta regeneration for post #' . $idPost . $detail];
         }
 
-        $this->dbg("Raw API response for post $idPost: " . mb_substr($raw, 0, 500));
+        $this->dbg('Raw API response for post ' . $idPost . ': ' . mb_substr($raw, 0, 500));
 
-        // Parse JSON response – strip markdown fences if present
+        // Parse JSON response and strip markdown fences if present.
         $clean = trim(preg_replace('/```(?:json)?\s*|\s*```/s', '', trim($raw)));
-        $this->dbg("Cleaned JSON string: " . mb_substr($clean, 0, 300));
-        $meta  = json_decode($clean, true);
+        $this->dbg('Cleaned JSON string: ' . mb_substr($clean, 0, 300));
+        $meta = json_decode($clean, true);
 
-        $this->dbg("json_decode result: " . print_r($meta, true));
+        $this->dbg('json_decode result: ' . print_r($meta, true));
 
         if (!is_array($meta) || !isset($meta['meta_title'], $meta['meta_description'])) {
             PrestaShopLogger::addLog(
@@ -645,7 +624,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
             ];
         }
 
-        $metaTitle       = mb_substr(trim((string) $meta['meta_title']), 0, 255);
+        $metaTitle = mb_substr(trim((string) $meta['meta_title']), 0, 255);
         $metaDescription = mb_substr(trim((string) $meta['meta_description']), 0, 255);
 
         if ($metaTitle === '' || $metaDescription === '') {
@@ -666,7 +645,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
         );
 
         $row = [
-            'meta_title'       => pSQL($metaTitle),
+            'meta_title' => pSQL($metaTitle),
             'meta_description' => pSQL($metaDescription),
         ];
 
@@ -677,40 +656,40 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
                 '`id_simpleblog_post` = ' . $idPost . ' AND `id_lang` = ' . $targetLangId
             );
         } else {
-            // New row – copy all fields from source, override meta fields
+            // New row copies all fields from source and overrides meta fields.
             $newRow = [
                 'id_simpleblog_post' => $idPost,
-                'id_lang'            => $targetLangId,
-                'title'              => pSQL(isset($source['title'])         ? $source['title']         : ''),
-                'meta_title'         => pSQL($metaTitle),
-                'meta_description'   => pSQL($metaDescription),
-                'meta_keywords'      => pSQL(isset($source['meta_keywords']) ? $source['meta_keywords'] : ''),
-                'canonical'          => pSQL(isset($source['canonical'])     ? $source['canonical']     : '', true),
-                'short_content'      => pSQL(isset($source['short_content']) ? $source['short_content'] : '', true),
-                'content'            => '',
-                'video_code'         => pSQL(isset($source['video_code'])    ? $source['video_code']    : '', true),
-                'external_url'       => pSQL(isset($source['external_url'])  ? $source['external_url']  : '', true),
-                'link_rewrite'       => pSQL(isset($source['link_rewrite'])  ? $source['link_rewrite']  : ''),
+                'id_lang' => $targetLangId,
+                'title' => pSQL(isset($source['title'])         ? $source['title']         : ''),
+                'meta_title' => pSQL($metaTitle),
+                'meta_description' => pSQL($metaDescription),
+                'meta_keywords' => pSQL(isset($source['meta_keywords']) ? $source['meta_keywords'] : ''),
+                'canonical' => pSQL(isset($source['canonical'])     ? $source['canonical']     : '', true),
+                'short_content' => pSQL(isset($source['short_content']) ? $source['short_content'] : '', true),
+                'content' => '',
+                'video_code' => pSQL(isset($source['video_code'])    ? $source['video_code']    : '', true),
+                'external_url' => pSQL(isset($source['external_url'])  ? $source['external_url']  : '', true),
+                'link_rewrite' => pSQL(isset($source['link_rewrite'])  ? $source['link_rewrite']  : ''),
             ];
             $ok = Db::getInstance()->insert('simpleblog_post_lang', $newRow);
         }
 
-        $this->dbg("DB save result for post $idPost lang $targetLangId: " . ($ok ? 'OK' : 'FAILED'));
+        $this->dbg('DB save result for post ' . $idPost . ' lang ' . $targetLangId . ': ' . ($ok ? 'OK' : 'FAILED'));
 
         if (!$ok) {
             return ['success' => false, 'message' => 'DB error saving meta for post #' . $idPost];
         }
 
-        $this->dbg("Meta saved — meta_title=" . mb_substr($metaTitle, 0, 80) . " | meta_desc=" . mb_substr($metaDescription, 0, 80));
+        $this->dbg('Meta saved - meta_title=' . mb_substr($metaTitle, 0, 80) . ' | meta_desc=' . mb_substr($metaDescription, 0, 80));
 
         return [
             'success' => true,
             'message' => 'OK',
-            'data'    => [
-                'post_id'          => $idPost,
-                'target_lang_id'   => $targetLangId,
+            'data' => [
+                'post_id' => $idPost,
+                'target_lang_id' => $targetLangId,
                 'target_lang_name' => $targetLang->name,
-                'meta_title'       => $metaTitle,
+                'meta_title' => $metaTitle,
                 'meta_description' => $metaDescription,
             ],
         ];
@@ -723,8 +702,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
     {
         $articleText = 'Title: ' . $title;
         if ($shortContent !== '') {
-            $articleText .= "
-Summary: " . $shortContent;
+            $articleText .= "\nSummary: " . $shortContent;
         }
 
         return 'You are an expert SEO copywriter. '
@@ -734,58 +712,62 @@ Summary: " . $shortContent;
             . 'meta_description: 140-160 characters, summarise the value, end with a call to action. '
             . 'Respond with ONLY a JSON object with keys "meta_title" and "meta_description". '
             . 'No markdown, no explanation, no code fences. '
-            . "
-
-Article:
-" . $articleText;
+            . "\n\nArticle:\n" . $articleText;
     }
 
     /**
-     * Direct OpenAI call without a system/user split – used for structured generation.
+     * Direct OpenAI call without a system/user split.
      *
      * @return string|false
      */
     private function callOpenAIRaw($apiKey, $model, $temperature, $userPrompt)
     {
-        $payload = json_encode([
-            'model'           => $model,
-            'temperature'     => $temperature,
-            'max_tokens'      => 300,
+        $payloadArr = [
+            'model' => $model,
+            'max_completion_tokens' => 300,
             'response_format' => ['type' => 'json_object'],
-            'messages'        => [
+            'messages' => [
                 ['role' => 'user', 'content' => $userPrompt],
             ],
-        ]);
+        ];
+
+        if ($this->openAiModelSupportsTemperature($model)) {
+            $payloadArr['temperature'] = $temperature;
+        }
+
+        $payload = json_encode($payloadArr);
 
         $ch = curl_init('https://api.openai.com/v1/chat/completions');
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $payload,
-            CURLOPT_HTTPHEADER     => [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
                 'Authorization: Bearer ' . $apiKey,
             ],
-            CURLOPT_TIMEOUT        => 60,
+            CURLOPT_TIMEOUT => 60,
             CURLOPT_CONNECTTIMEOUT => 15,
             CURLOPT_SSL_VERIFYPEER => true,
         ]);
 
-        $response  = curl_exec($ch);
-        $httpCode  = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response = curl_exec($ch);
+        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curlError = curl_error($ch);
         curl_close($ch);
 
         if ($curlError || !$response) {
+            $this->lastApiError = 'cURL error: ' . $curlError;
             PrestaShopLogger::addLog('SimpleBlogTranslator cURL error (regen): ' . $curlError, 3, null, 'Module', 0);
             return false;
         }
-        $this->dbg("callOpenAIRaw HTTP status: $httpCode | response length: " . strlen((string)$response));
+        $this->dbg('callOpenAIRaw HTTP status: ' . $httpCode . ' | response length: ' . strlen((string) $response));
         if ($httpCode !== 200) {
             $decoded = json_decode($response, true);
             $err = isset($decoded['error']['message']) ? $decoded['error']['message'] : 'HTTP ' . $httpCode;
+            $this->lastApiError = $err;
             PrestaShopLogger::addLog('SimpleBlogTranslator API error (regen): ' . $err, 3, null, 'Module', 0);
-            $this->dbg("API error body: " . mb_substr((string)$response, 0, 400));
+            $this->dbg('API error body: ' . mb_substr((string) $response, 0, 400));
             return false;
         }
 
@@ -828,21 +810,21 @@ Article:
     private function testOpenAI($apiKey, $model, $provider = 'openai')
     {
         $prefix = '[Provider: ' . $provider . ' | Model: ' . $model . '] ';
-        // Use GET /v1/models — no tokens consumed
+        // Use GET /v1/models - no tokens consumed
         $ch = curl_init('https://api.openai.com/v1/models');
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPGET        => true,
-            CURLOPT_HTTPHEADER     => [
+            CURLOPT_HTTPGET => true,
+            CURLOPT_HTTPHEADER => [
                 'Authorization: Bearer ' . $apiKey,
             ],
-            CURLOPT_TIMEOUT        => 15,
+            CURLOPT_TIMEOUT => 15,
             CURLOPT_CONNECTTIMEOUT => 10,
             CURLOPT_SSL_VERIFYPEER => true,
         ]);
 
-        $response  = curl_exec($ch);
-        $httpCode  = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response = curl_exec($ch);
+        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curlError = curl_error($ch);
         curl_close($ch);
 
@@ -854,7 +836,7 @@ Article:
 
         if ($httpCode !== 200) {
             $errMsg = isset($decoded['error']['message']) ? $decoded['error']['message'] : 'HTTP ' . $httpCode;
-            return ['success' => false, 'message' => $prefix . 'HTTP ' . $httpCode . ' — ' . $errMsg];
+            return ['success' => false, 'message' => $prefix . 'HTTP ' . $httpCode . ' - ' . $errMsg];
         }
 
         $available = [];
@@ -892,22 +874,22 @@ Article:
     private function testAnthropic($apiKey, $model, $provider = 'anthropic')
     {
         $prefix = '[Provider: ' . $provider . ' | Model: ' . $model . '] ';
-        // Use GET /v1/models — no tokens consumed, returns the list of accessible models
+        // Use GET /v1/models - no tokens consumed, returns the list of accessible models
         $ch = curl_init('https://api.anthropic.com/v1/models?limit=20');
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPGET        => true,
-            CURLOPT_HTTPHEADER     => [
+            CURLOPT_HTTPGET => true,
+            CURLOPT_HTTPHEADER => [
                 'x-api-key: ' . $apiKey,
                 'anthropic-version: 2023-06-01',
             ],
-            CURLOPT_TIMEOUT        => 15,
+            CURLOPT_TIMEOUT => 15,
             CURLOPT_CONNECTTIMEOUT => 10,
             CURLOPT_SSL_VERIFYPEER => true,
         ]);
 
-        $response  = curl_exec($ch);
-        $httpCode  = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response = curl_exec($ch);
+        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curlError = curl_error($ch);
         curl_close($ch);
 
@@ -919,7 +901,7 @@ Article:
 
         if ($httpCode !== 200) {
             $errMsg = isset($decoded['error']['message']) ? $decoded['error']['message'] : 'HTTP ' . $httpCode;
-            return ['success' => false, 'message' => $prefix . 'HTTP ' . $httpCode . ' — ' . $errMsg];
+            return ['success' => false, 'message' => $prefix . 'HTTP ' . $httpCode . ' - ' . $errMsg];
         }
 
         // Extract model IDs available to this key
@@ -986,11 +968,11 @@ Article:
         );
 
         $payload = json_encode([
-            'model'       => $model,
-            'max_tokens'  => 4096,
+            'model' => $model,
+            'max_tokens' => 4096,
             'temperature' => min((float) $temperature, 1.0),
-            'system'      => $systemPrompt,
-            'messages'    => [
+            'system' => $systemPrompt,
+            'messages' => [
                 ['role' => 'user', 'content' => $content],
             ],
         ]);
@@ -998,20 +980,20 @@ Article:
         $ch = curl_init('https://api.anthropic.com/v1/messages');
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $payload,
-            CURLOPT_HTTPHEADER     => [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
                 'x-api-key: ' . $apiKey,
                 'anthropic-version: 2023-06-01',
             ],
-            CURLOPT_TIMEOUT        => 180,
+            CURLOPT_TIMEOUT => 180,
             CURLOPT_CONNECTTIMEOUT => 15,
             CURLOPT_SSL_VERIFYPEER => true,
         ]);
 
-        $response  = curl_exec($ch);
-        $httpCode  = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response = curl_exec($ch);
+        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curlError = curl_error($ch);
         curl_close($ch);
 
@@ -1026,7 +1008,7 @@ Article:
 
         if ($httpCode !== 200) {
             $decoded = json_decode($response, true);
-            $errMsg  = isset($decoded['error']['message']) ? $decoded['error']['message'] : ('HTTP ' . $httpCode);
+            $errMsg = isset($decoded['error']['message']) ? $decoded['error']['message'] : ('HTTP ' . $httpCode);
             $this->lastApiError = $errMsg;
             PrestaShopLogger::addLog('SimpleBlogTranslator Anthropic API error: ' . $errMsg, 3, null, 'Module', 0);
             $this->dbg('Anthropic API error body: ' . mb_substr((string) $response, 0, 400));
@@ -1040,17 +1022,17 @@ Article:
     }
 
     /**
-     * Direct Anthropic call without system/user split – used for structured generation (meta regen).
+     * Direct Anthropic call without system/user split - used for structured generation (meta regen).
      *
      * @return string|false
      */
     private function callAnthropicRaw($apiKey, $model, $temperature, $userPrompt)
     {
         $payload = json_encode([
-            'model'       => $model,
-            'max_tokens'  => 300,
+            'model' => $model,
+            'max_tokens' => 300,
             'temperature' => min((float) $temperature, 1.0),
-            'messages'    => [
+            'messages' => [
                 ['role' => 'user', 'content' => $userPrompt],
             ],
         ]);
@@ -1058,20 +1040,20 @@ Article:
         $ch = curl_init('https://api.anthropic.com/v1/messages');
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $payload,
-            CURLOPT_HTTPHEADER     => [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
                 'x-api-key: ' . $apiKey,
                 'anthropic-version: 2023-06-01',
             ],
-            CURLOPT_TIMEOUT        => 60,
+            CURLOPT_TIMEOUT => 60,
             CURLOPT_CONNECTTIMEOUT => 15,
             CURLOPT_SSL_VERIFYPEER => true,
         ]);
 
-        $response  = curl_exec($ch);
-        $httpCode  = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response = curl_exec($ch);
+        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curlError = curl_error($ch);
         curl_close($ch);
 
@@ -1086,7 +1068,7 @@ Article:
 
         if ($httpCode !== 200) {
             $decoded = json_decode($response, true);
-            $err     = isset($decoded['error']['message']) ? $decoded['error']['message'] : 'HTTP ' . $httpCode;
+            $err = isset($decoded['error']['message']) ? $decoded['error']['message'] : 'HTTP ' . $httpCode;
             $this->lastApiError = $err;
             PrestaShopLogger::addLog('SimpleBlogTranslator Anthropic API error (regen): ' . $err, 3, null, 'Module', 0);
             $this->dbg('Anthropic API error body: ' . mb_substr((string) $response, 0, 400));
@@ -1103,7 +1085,7 @@ Article:
     /* OpenAI API calls                                                     */
     /* ================================================================== */
 
-        private function callOpenAI($apiKey, $model, $temperature, $phraseTemplate, $content, $fromLang, $toLang)
+    private function callOpenAI($apiKey, $model, $temperature, $phraseTemplate, $content, $fromLang, $toLang)
     {
         $systemPrompt = str_replace(
             ['[from_lang]', '[to_lang]'],
@@ -1111,15 +1093,20 @@ Article:
             $phraseTemplate
         );
 
-        $payload = json_encode([
+        $payloadArr = [
             'model' => $model,
-            'temperature' => $temperature,
-            'max_tokens' => 4096,
+            'max_completion_tokens' => 4096,
             'messages' => [
                 ['role' => 'system', 'content' => $systemPrompt],
                 ['role' => 'user', 'content' => $content],
             ],
-        ]);
+        ];
+
+        if ($this->openAiModelSupportsTemperature($model)) {
+            $payloadArr['temperature'] = $temperature;
+        }
+
+        $payload = json_encode($payloadArr);
 
         $ch = curl_init('https://api.openai.com/v1/chat/completions');
         curl_setopt_array($ch, [
@@ -1141,6 +1128,7 @@ Article:
         curl_close($ch);
 
         if ($curlError || !$response) {
+            $this->lastApiError = 'cURL error: ' . $curlError;
             PrestaShopLogger::addLog('SimpleBlogTranslator cURL error: ' . $curlError, 3, null, 'Module', 0);
 
             return false;
@@ -1149,6 +1137,7 @@ Article:
         if ($httpCode !== 200) {
             $decoded = json_decode($response, true);
             $errMsg = isset($decoded['error']['message']) ? $decoded['error']['message'] : ('HTTP ' . $httpCode);
+            $this->lastApiError = $errMsg;
             PrestaShopLogger::addLog('SimpleBlogTranslator API error: ' . $errMsg, 3, null, 'Module', 0);
 
             return false;
@@ -1159,5 +1148,18 @@ Article:
         return isset($decoded['choices'][0]['message']['content'])
             ? $decoded['choices'][0]['message']['content']
             : false;
+    }
+
+    private function openAiModelSupportsTemperature($model)
+    {
+        $noTempPrefixes = ['o1', 'o3', 'o4', 'gpt-5.5'];
+
+        foreach ($noTempPrefixes as $prefix) {
+            if (strpos($model, $prefix) === 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

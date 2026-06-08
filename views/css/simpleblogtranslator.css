@@ -1,24 +1,24 @@
 /**
- * SimpleBlog Translator – Admin CSS
+ * SimpleBlog Translator - Admin CSS
  *
  * @author    Custom
  * @copyright 2024 Custom
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 
-/* ── Wrap ───────────────────────────────────────────────────── */
+/* -- Wrap ----------------------------------------------------- */
 .sbt-wrap {
     padding-bottom: 90px;
 }
 
-/* ── Page header ─────────────────────────────────────────────── */
+/* -- Page header ----------------------------------------------- */
 .page-head .page-title small {
     font-size: 13px;
     color: #999;
     margin-left: 8px;
 }
 
-/* ── Options panel layout ────────────────────────────────────── */
+/* -- Options panel layout -------------------------------------- */
 .sbt-option-box {
     border: 1px solid #e0e0e0;
     border-radius: 4px;
@@ -37,7 +37,7 @@
     color: #8a6d3b;
 }
 
-/* ── Panel heading ───────────────────────────────────────────── */
+/* -- Panel heading --------------------------------------------- */
 .sbt-panel-title-left {
     display: inline-block;
 }
@@ -54,7 +54,7 @@
     display: inline-block !important;
 }
 
-/* ── Table ───────────────────────────────────────────────────── */
+/* -- Table ----------------------------------------------------- */
 .sbt-table {
     font-size: 13px;
     table-layout: fixed;
@@ -129,7 +129,7 @@
     font-size: 11px;
 }
 
-/* ── Pagination ───────────────────────────────────────────────── */
+/* -- Pagination ------------------------------------------------- */
 .sbt-pagination {
     margin: 0;
 }
@@ -140,7 +140,7 @@
     color: #666;
 }
 
-/* ── Progress panel ───────────────────────────────────────────── */
+/* -- Progress panel --------------------------------------------- */
 .sbt-progress-header {
     display: flex;
     align-items: center;
@@ -183,7 +183,7 @@
     word-break: break-all;
 }
 
-/* ── Fixed action bar ─────────────────────────────────────────── */
+/* -- Fixed action bar ------------------------------------------- */
 #sbt-action-bar {
     position: fixed;
     bottom: 0;
@@ -226,13 +226,13 @@
     font-weight: 600;
 }
 
-/* ── Alert container ──────────────────────────────────────────── */
+/* -- Alert container -------------------------------------------- */
 #sbt-alert-container .alert {
     margin-bottom: 0;
 }
 
 
-/* ── Search / Filter / Sort bar ──────────────────────────────────── */
+/* -- Search / Filter / Sort bar ------------------------------------ */
 .sbt-search-bar {
     padding: 8px 14px;
     background: #f8f9fa;
@@ -250,13 +250,13 @@
     gap: 6px;
 }
 
-/* Title search – takes remaining space */
+/* Title search - takes remaining space */
 .sbt-search-field {
     flex: 1 1 auto;
     min-width: 0;
 }
 
-/* Status + Sort selects – fixed compact width */
+/* Status + Sort selects - fixed compact width */
 .sbt-search-field--sm {
     flex: 0 0 150px;
     width: 150px;
@@ -277,7 +277,7 @@
     opacity: 0.4;
 }
 
-/* ── Additional options – regen meta ─────────────────────────────── */
+/* -- Additional options - regen meta ------------------------------- */
 .sbt-opt-divider {
     margin: 8px 0;
     border-color: #e0e0e0;

@@ -1,5 +1,5 @@
 /**
- * SimpleBlog Translator – Admin JS
+ * SimpleBlog Translator - Admin JS
  *
  * @author    Tecnoacquisti.com
  * @copyright 2026 Tecnoacquisti.com
@@ -8,10 +8,10 @@
 
 $(document).ready(function () {
 
-    /* ── State ──────────────────────────────────────────────────────────── */
+    /* -- State ------------------------------------------------------------ */
     var stopRequested = false;
 
-    /* ── Init: replace numeric IDs in lang badges with real names ────────── */
+    /* -- Init: replace numeric IDs in lang badges with real names ---------- */
     function initLangBadges() {
         $('.sbt-lang-badge').each(function () {
             var lid = parseInt($(this).data('lang-id'), 10);
@@ -23,7 +23,7 @@ $(document).ready(function () {
     }
     initLangBadges();
 
-    /* ── Regen meta toggle: disable translate-content when regen is on ──── */
+    /* -- Regen meta toggle: disable translate-content when regen is on ---- */
     $('#sbt-regen-meta').on('change', function () {
         var regenOn = $(this).is(':checked');
         $('#sbt-translate-content').prop('disabled', regenOn);
@@ -39,7 +39,7 @@ $(document).ready(function () {
         $('#sbt-opt-content-wrap, #sbt-opt-content-note').addClass('sbt-disabled-opt');
     }
 
-    /* ── Action-bar counter update ───────────────────────────────────────── */
+    /* -- Action-bar counter update ----------------------------------------- */
     function refreshActionBar() {
         var selPosts = $('.sbt-post-check:checked').length;
         var targetVal = $('#sbt-target-langs').val();
@@ -63,7 +63,7 @@ $(document).ready(function () {
     }
     $('#sbt-regen-meta').on('change', refreshActionBar);
 
-    /* ── Row click → toggle checkbox ────────────────────────────────────── */
+    /* -- Row click -> toggle checkbox -------------------------------------- */
     $(document).on('click', '.sbt-post-row td:not(.sbt-col-check)', function () {
         var $cb = $(this).closest('tr').find('.sbt-post-check');
         if (!$cb.is(':disabled')) {
@@ -102,12 +102,12 @@ $(document).ready(function () {
 
     $('#sbt-target-langs').on('change', refreshActionBar);
 
-    /* ── Source language change → reload page ────────────────────────────── */
+    /* -- Source language change -> reload page ------------------------------ */
     $('#sbt-source-lang').on('change', function () {
         $('#sbt-filter-form').submit();
     });
 
-    /* ── Per-page selector ───────────────────────────────────────────────── */
+    /* -- Per-page selector ------------------------------------------------- */
     $('#sbt-per-page').on('change', function () {
         var form = $('#sbt-search-form');
         $('input[name="per_page"]', form).val($(this).val());
@@ -115,13 +115,13 @@ $(document).ready(function () {
         form.submit();
     });
 
-    /* ── Stop button ──────────────────────────────────────────────────────── */
+    /* -- Stop button -------------------------------------------------------- */
     $('#sbt-stop-btn').on('click', function () {
         stopRequested = true;
         $(this).prop('disabled', true).html('<i class="icon-spinner icon-spin"></i> Stopping...');
     });
 
-    /* ── Start translation button ─────────────────────────────────────────── */
+    /* -- Start translation button ------------------------------------------- */
     $('#sbt-translate-btn').on('click', function () {
         var targetLangs = $('#sbt-target-langs').val();
         var selectedIds = [];
@@ -146,7 +146,7 @@ $(document).ready(function () {
         if (regenMeta) {
             // Regen meta: process source lang first, then each target lang
             for (var i = 0; i < selectedIds.length; i++) {
-                // Source language (target_lang_id = source_lang_id → regenerate in place)
+                // Source language (target_lang_id = source_lang_id -> regenerate in place)
                 queue.push({
                     postId: selectedIds[i],
                     targetLangId: SBT.sourceLangId,
@@ -180,9 +180,9 @@ $(document).ready(function () {
         runQueue(queue);
     });
 
-    /* ════════════════════════════════════════════════════════════════════════
+    /* ------------------------------------------------------------------------
        QUEUE RUNNER
-    ════════════════════════════════════════════════════════════════════════ */
+    ------------------------------------------------------------------------ */
     function runQueue(queue) {
         stopRequested = false;
         var total = queue.length;
@@ -266,7 +266,7 @@ $(document).ready(function () {
         next(0);
     }
 
-    /* ── Finalise ───────────────────────────────────────────────────────── */
+    /* -- Finalise --------------------------------------------------------- */
     function finalise(done, total, errors) {
         var label = stopRequested ? SBT.i18n.stopped : SBT.i18n.complete;
         var alertType = errors > 0 ? 'warning' : 'success';
@@ -276,13 +276,13 @@ $(document).ready(function () {
         var msg = '<strong>' + escHtml(label) + '</strong> '
             + done + ' / ' + total + ' completed.';
         if (errors > 0) {
-            msg += ' <span class="text-danger">' + errors + ' error(s) – check the log above.</span>';
+            msg += ' <span class="text-danger">' + errors + ' error(s) - check the log above.</span>';
         }
         showAlert(alertType, msg);
         $('html,body').animate({ scrollTop: $('#sbt-alert-container').offset().top - 60 }, 400);
     }
 
-    /* ── Helpers ────────────────────────────────────────────────────────── */
+    /* -- Helpers ---------------------------------------------------------- */
     function setProgress(done, total, label) {
         var pct = total > 0 ? Math.round((done / total) * 100) : 0;
         $('#sbt-progress-bar')
@@ -316,6 +316,6 @@ $(document).ready(function () {
         return str.length > max ? str.substring(0, max) + '...' : str;
     }
 
-    /* ── Initial state ──────────────────────────────────────────────────── */
+    /* -- Initial state ---------------------------------------------------- */
     refreshActionBar();
 });
