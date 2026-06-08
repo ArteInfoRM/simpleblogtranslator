@@ -19,7 +19,7 @@ class SimpleBlogTranslator extends Module
     {
         $this->name = 'simpleblogtranslator';
         $this->tab = 'administration';
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         $this->author = 'Tecnoacquisti.com';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -249,6 +249,8 @@ class SimpleBlogTranslator extends Module
 
         $models = [
             // OpenAI
+            ['id' => 'gpt-5.5',           'name' => '[OpenAI] GPT-5.5'],
+            ['id' => 'gpt-5.5-pro',       'name' => '[OpenAI] GPT-5.5 Pro'],
             ['id' => 'gpt-5.4',           'name' => '[OpenAI] GPT-5.4'],
             ['id' => 'gpt-5.4-mini',      'name' => '[OpenAI] GPT-5.4 mini'],
             ['id' => 'gpt-5.4-nano',      'name' => '[OpenAI] GPT-5.4 nano'],
@@ -259,7 +261,9 @@ class SimpleBlogTranslator extends Module
             ['id' => 'gpt-4.1-nano',      'name' => '[OpenAI] GPT-4.1 nano'],
             ['id' => 'gpt-4o',            'name' => '[OpenAI] GPT-4o'],
             ['id' => 'gpt-4o-mini',       'name' => '[OpenAI] GPT-4o mini'],
-            // Anthropic – date-suffixed IDs are required for the raw API
+            // Anthropic
+            ['id' => 'claude-opus-4-8',            'name' => '[Anthropic] Claude Opus 4.8'],
+            ['id' => 'claude-opus-4-7',            'name' => '[Anthropic] Claude Opus 4.7'],
             ['id' => 'claude-haiku-4-5-20251001',  'name' => '[Anthropic] Claude Haiku 4.5 (recommended)'],
             ['id' => 'claude-sonnet-4-5-20250929', 'name' => '[Anthropic] Claude Sonnet 4.5'],
             ['id' => 'claude-sonnet-4-6',          'name' => '[Anthropic] Claude Sonnet 4.6'],

@@ -7,6 +7,13 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.1] — 2026-06-08
+
+### Changed
+- Model selector aligned with the current text-generation models used by Art Blog Creator: added `gpt-5.5`, `gpt-5.5-pro`, `claude-opus-4-8`, and `claude-opus-4-7`.
+
+---
+
 ## [1.1.0] — 2026-03-27
 
 ### Added

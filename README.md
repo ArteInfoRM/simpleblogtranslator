@@ -72,10 +72,10 @@ The queue runs sequentially. Progress, per-article status and any errors are sho
 ## Supported models
 
 ### OpenAI
-`gpt-5.4` · `gpt-5.4-mini` · `gpt-5.4-nano` · `gpt-5` · `gpt-5-mini` · `gpt-4.1` · `gpt-4.1-mini` *(recommended)* · `gpt-4.1-nano` · `gpt-4o` · `gpt-4o-mini`
+`gpt-5.5` · `gpt-5.5-pro` · `gpt-5.4` · `gpt-5.4-mini` · `gpt-5.4-nano` · `gpt-5` · `gpt-5-mini` · `gpt-4.1` · `gpt-4.1-mini` *(recommended)* · `gpt-4.1-nano` · `gpt-4o` · `gpt-4o-mini`
 
 ### Anthropic
-`claude-haiku-4-5-20251001` *(recommended)* · `claude-sonnet-4-5-20250929` · `claude-sonnet-4-6` · `claude-opus-4-6`
+`claude-opus-4-8` · `claude-opus-4-7` · `claude-haiku-4-5-20251001` *(recommended)* · `claude-sonnet-4-5-20250929` · `claude-sonnet-4-6` · `claude-opus-4-6`
 
 ---
 

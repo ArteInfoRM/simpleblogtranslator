@@ -36,3 +36,5 @@
 .gitignore      export-ignore
 .editorconfig   export-ignore
 CHANGELOG.md    export-ignore
+config*.xml     export-ignore
+dist/           export-ignore
