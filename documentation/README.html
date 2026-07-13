@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>simpleblogtranslator - README</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --text: #1f2933;
+            --muted: #5f6b7a;
+            --border: #d8dee6;
+            --panel: #f6f8fa;
+            --accent: #0b7285;
+        }
+        body {
+            margin: 0;
+            background: #fff;
+            color: var(--text);
+            font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+        }
+        main {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 32px 24px 56px;
+        }
+        h1, h2, h3, h4 {
+            line-height: 1.25;
+            margin: 1.8em 0 .6em;
+        }
+        h1 {
+            margin-top: 0;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 2rem;
+        }
+        h2 {
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            font-size: 1.45rem;
+        }
+        h3 {
+            font-size: 1.18rem;
+        }
+        p {
+            margin: .7em 0;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        blockquote {
+            margin: 1em 0;
+            padding: .7em 1em;
+            color: var(--muted);
+            border-left: 4px solid var(--border);
+            background: var(--panel);
+        }
+        code {
+            padding: .15em .35em;
+            border-radius: 4px;
+            background: var(--panel);
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            font-size: .92em;
+        }
+        pre {
+            overflow: auto;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--panel);
+        }
+        pre code {
+            padding: 0;
+            background: transparent;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        th, td {
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            vertical-align: top;
+        }
+        th {
+            background: var(--panel);
+            text-align: left;
+        }
+        ul, ol {
+            padding-left: 1.5em;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 2em 0;
+        }
+        .generated-note {
+            margin-bottom: 24px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--panel);
+            color: var(--muted);
+            font-size: .92em;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="generated-note">Generated from the Markdown source included with the module.</div>
+<h1>SimpleBlog Translator</h1>
+<p>PrestaShop module that translates <strong>PrestaHome SimpleBlog</strong> articles using the <strong>OpenAI</strong> or <strong>Anthropic</strong> AI API.</p>
+<hr>
+<h2>Features</h2>
+<ul>
+<li>Translate article title, meta title, meta description, excerpt and full content</li>
+<li>Supports curated <strong>OpenAI</strong> (GPT-5.4, GPT-5.5, GPT-5.6) and <strong>Anthropic</strong> (Claude Haiku, Sonnet, Opus) models</li>
+<li>AI-powered <strong>SEO meta regeneration</strong> (meta title + meta description) for any language</li>
+<li>Bulk translation queue with real-time progress log and stop button</li>
+<li>Provider/model switcher with live compatibility filter in the back office</li>
+<li>Branded configuration header with Blog Translator, README, changelog, and API-test actions</li>
+<li>Built-in <strong>API connection test</strong> — lists accessible models for the saved key</li>
+<li>Debug mode → detailed logs in PrestaShop logger</li>
+<li>Customisable system prompt (supports <code>[from_lang]</code> / <code>[to_lang]</code> placeholders)</li>
+<li>Compatible with PrestaShop <strong>1.7.8 → 9.x</strong>, PHP <strong>8.1+</strong></li>
+</ul>
+<hr>
+<h2>Requirements</h2>
+<table><thead><tr><th>Dependency</th><th>Version</th></tr></thead><tbody><tr><td>PrestaShop</td><td>1.7.8 → <strong>9.x</strong> (tested on PS9)</td></tr><tr><td>PHP</td><td>≥ 8.1</td></tr><tr><td>SimpleBlog for PrestaShop</td><td>any recent version</td></tr><tr><td>OpenAI API key <strong>or</strong> Anthropic API key</td><td>—</td></tr></tbody></table>
+<blockquote><strong>Anthropic keys</strong> must be created at <a href="https://console.anthropic.com">console.anthropic.com</a> (billing required for Claude 4.x models). <strong>OpenAI keys</strong> are available at <a href="https://platform.openai.com">platform.openai.com</a>.</blockquote>
+<hr>
+<h2>Installation</h2>
+<ol>
+<li>Download or clone this repository.</li>
+<li>Compress the <code>simpleblogtranslator/</code> folder as a ZIP.</li>
+<li>In the PrestaShop back office go to <strong>Modules → Module Manager → Upload a module</strong> and upload the ZIP.</li>
+<li>Click <strong>Configure</strong> on the module card.</li>
+</ol>
+<hr>
+<h2>Configuration</h2>
+<table><thead><tr><th>Setting</th><th>Description</th></tr></thead><tbody><tr><td><strong>AI Provider</strong></td><td><code>openai</code> or <code>anthropic</code></td></tr><tr><td><strong>OpenAI API Key</strong></td><td>Secret key starting with <code>sk-…</code></td></tr><tr><td><strong>Anthropic API Key</strong></td><td>Secret key starting with <code>sk-ant-…</code></td></tr><tr><td><strong>Model</strong></td><td>Provider-filtered dropdown (only compatible models shown)</td></tr><tr><td><strong>Debug Mode</strong></td><td>Writes verbose logs to PrestaShop logger</td></tr><tr><td><strong>Translation Phrase</strong></td><td>System prompt — must contain <code>[from_lang]</code> and <code>[to_lang]</code></td></tr></tbody></table>
+<p>Use the <strong>Test API Connection</strong> button to verify the saved key and model before translating.</p>
+<hr>
+<h2>Usage</h2>
+<ol>
+<li>Open <strong>Blog Translator</strong> from the module configuration page or the sidebar menu.</li>
+<li>Select the <strong>source language</strong> and filter/search articles as needed.</li>
+<li>Choose one or more <strong>target languages</strong>.</li>
+<li>Optionally enable <strong>Translate full content</strong> and/or <strong>Regenerate SEO meta</strong>.</li>
+<li>Select articles (checkbox or <em>Select all</em>) and click <strong>Translate</strong>.</li>
+</ol>
+<p>The queue runs sequentially. Progress, per-article status and any errors are shown in the live log. Click <strong>Stop</strong> to abort after the current article.</p>
+<hr>
+<h2>Supported models</h2>
+<h3>OpenAI</h3>
+<p><code>gpt-5.6-luna</code> · <code>gpt-5.6-sol</code> · <code>gpt-5.6-terra</code> · <code>gpt-5.5</code> · <code>gpt-5.5-pro</code> · <code>gpt-5.4</code> · <code>gpt-5.4-mini</code></p>
+<h3>Anthropic</h3>
+<p><code>claude-sonnet-5</code> · <code>claude-fable-5</code> · <code>claude-opus-4-8</code> · <code>claude-sonnet-4-6</code> · <code>claude-haiku-4-5-20251001</code></p>
+<hr>
+<h2>License</h2>
+<p>Academic Free License 3.0 — see <a href="LICENSE">LICENSE</a>.</p>
+<hr>
+<h2>Credits</h2>
+<p>Developed by <a href="https://www.tecnoacquisti.com">Tecnoacquisti.com</a> — PrestaShop modules, consulting and hosting.</p>
+
+</main>
+</body>
+</html>

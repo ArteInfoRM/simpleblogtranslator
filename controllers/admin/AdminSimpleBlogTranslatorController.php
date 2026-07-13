@@ -437,9 +437,8 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
             return ['success' => false, 'message' => 'Source and target language are the same'];
         }
 
-        $defaultModel = ($provider === 'anthropic') ? 'claude-haiku-4-5-20251001' : 'gpt-4o-mini';
+        $defaultModel = ($provider === 'anthropic') ? 'claude-haiku-4-5-20251001' : 'gpt-5.4-mini';
         $model = Configuration::get('SIMPLEBLOGTRANSLATOR_MODEL') ?: $defaultModel;
-        $temperature = (float) (Configuration::get('SIMPLEBLOGTRANSLATOR_TEMPERATURE') ?: 0);
         $phrase = Configuration::get('SIMPLEBLOGTRANSLATOR_PHRASE')
             ?: 'Translate from {from_lang} to {to_lang}. Preserve HTML. Return only the translation.';
 
@@ -459,9 +458,9 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
                 continue;
             }
             if ($provider === 'anthropic') {
-                $result = $this->callAnthropic($apiKey, $model, $temperature, $phrase, $value, $sourceLang->name, $targetLang->name);
+                $result = $this->callAnthropic($apiKey, $model, $phrase, $value, $sourceLang->name, $targetLang->name);
             } else {
-                $result = $this->callOpenAI($apiKey, $model, $temperature, $phrase, $value, $sourceLang->name, $targetLang->name);
+                $result = $this->callOpenAI($apiKey, $model, $phrase, $value, $sourceLang->name, $targetLang->name);
             }
             if ($result === false) {
                 $detail = $this->lastApiError !== '' ? ': ' . $this->lastApiError : '';
@@ -544,7 +543,6 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
     /**
      * @param string $apiKey
      * @param string $model
-     * @param float $temperature
      * @param string $phraseTemplate
      * @param string $content
      * @param string $fromLang
@@ -564,9 +562,8 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
     private function processRegenMeta($idPost, $sourceLangId, $targetLangId, $source, $apiKey)
     {
         $provider = Configuration::get('SIMPLEBLOGTRANSLATOR_PROVIDER') ?: 'openai';
-        $defaultModel = ($provider === 'anthropic') ? 'claude-haiku-4-5-20251001' : 'gpt-4o-mini';
+        $defaultModel = ($provider === 'anthropic') ? 'claude-haiku-4-5-20251001' : 'gpt-5.4-mini';
         $model = Configuration::get('SIMPLEBLOGTRANSLATOR_MODEL') ?: $defaultModel;
-        $temperature = (float) (Configuration::get('SIMPLEBLOGTRANSLATOR_TEMPERATURE') ?: 0);
         $targetLang = new Language($targetLangId);
 
         // If target == source we regenerate in the source language itself
@@ -594,9 +591,9 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
         $this->dbg('Full prompt sent to API: ' . mb_substr($prompt, 0, 400));
 
         if ($provider === 'anthropic') {
-            $raw = $this->callAnthropicRaw($apiKey, $model, $temperature, $prompt);
+            $raw = $this->callAnthropicRaw($apiKey, $model, $prompt);
         } else {
-            $raw = $this->callOpenAIRaw($apiKey, $model, $temperature, $prompt);
+            $raw = $this->callOpenAIRaw($apiKey, $model, $prompt);
         }
         if ($raw === false) {
             $detail = $this->lastApiError !== '' ? ': ' . $this->lastApiError : '';
@@ -720,7 +717,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
      *
      * @return string|false
      */
-    private function callOpenAIRaw($apiKey, $model, $temperature, $userPrompt)
+    private function callOpenAIRaw($apiKey, $model, $userPrompt)
     {
         $payloadArr = [
             'model' => $model,
@@ -730,10 +727,6 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
                 ['role' => 'user', 'content' => $userPrompt],
             ],
         ];
-
-        if ($this->openAiModelSupportsTemperature($model)) {
-            $payloadArr['temperature'] = $temperature;
-        }
 
         $payload = json_encode($payloadArr);
 
@@ -797,7 +790,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
             }
         }
 
-        $defaultModel = ($provider === 'anthropic') ? 'claude-haiku-4-5-20251001' : 'gpt-4o-mini';
+        $defaultModel = ($provider === 'anthropic') ? 'claude-haiku-4-5-20251001' : 'gpt-5.4-mini';
         $model = Configuration::get('SIMPLEBLOGTRANSLATOR_MODEL') ?: $defaultModel;
 
         if ($provider === 'anthropic') {
@@ -951,7 +944,6 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
     /**
      * @param string $apiKey
      * @param string $model
-     * @param float  $temperature
      * @param string $phraseTemplate
      * @param string $content
      * @param string $fromLang
@@ -959,7 +951,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
      *
      * @return string|false
      */
-    private function callAnthropic($apiKey, $model, $temperature, $phraseTemplate, $content, $fromLang, $toLang)
+    private function callAnthropic($apiKey, $model, $phraseTemplate, $content, $fromLang, $toLang)
     {
         $systemPrompt = str_replace(
             ['[from_lang]', '[to_lang]'],
@@ -970,7 +962,6 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
         $payload = json_encode([
             'model' => $model,
             'max_tokens' => 4096,
-            'temperature' => min((float) $temperature, 1.0),
             'system' => $systemPrompt,
             'messages' => [
                 ['role' => 'user', 'content' => $content],
@@ -1026,12 +1017,11 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
      *
      * @return string|false
      */
-    private function callAnthropicRaw($apiKey, $model, $temperature, $userPrompt)
+    private function callAnthropicRaw($apiKey, $model, $userPrompt)
     {
         $payload = json_encode([
             'model' => $model,
             'max_tokens' => 300,
-            'temperature' => min((float) $temperature, 1.0),
             'messages' => [
                 ['role' => 'user', 'content' => $userPrompt],
             ],
@@ -1085,7 +1075,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
     /* OpenAI API calls                                                     */
     /* ================================================================== */
 
-    private function callOpenAI($apiKey, $model, $temperature, $phraseTemplate, $content, $fromLang, $toLang)
+    private function callOpenAI($apiKey, $model, $phraseTemplate, $content, $fromLang, $toLang)
     {
         $systemPrompt = str_replace(
             ['[from_lang]', '[to_lang]'],
@@ -1101,10 +1091,6 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
                 ['role' => 'user', 'content' => $content],
             ],
         ];
-
-        if ($this->openAiModelSupportsTemperature($model)) {
-            $payloadArr['temperature'] = $temperature;
-        }
 
         $payload = json_encode($payloadArr);
 
@@ -1150,16 +1136,4 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
             : false;
     }
 
-    private function openAiModelSupportsTemperature($model)
-    {
-        $noTempPrefixes = ['o1', 'o3', 'o4', 'gpt-5.5'];
-
-        foreach ($noTempPrefixes as $prefix) {
-            if (strpos($model, $prefix) === 0) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 }

@@ -7,6 +7,19 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.3] — 2026-07-13
+
+### Changed
+- Aligned the curated OpenAI and Anthropic model selector with Art Blog Creator, including GPT-5.6 and Claude 5 entries.
+- Defaulted new OpenAI configurations and connection-test fallbacks to `gpt-5.4-mini`.
+- Removed the unused temperature configuration and API parameter.
+- Added a branded configuration header with documentation, API test, and Blog Translator actions.
+
+### Security
+- Validated the selected model against the provider-specific allowlist before persisting the configuration.
+
+---
+
 ## [1.1.2] — 2026-06-08
 
 ### Fixed

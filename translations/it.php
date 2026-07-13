@@ -19,6 +19,7 @@ $_MODULE['<{simpleblogtranslator}prestashop>simpleblogtranslator_a559b87068921ee
 $_MODULE['<{simpleblogtranslator}prestashop>simpleblogtranslator_660dc0da358715519e1f07b5c2acc3b1'] = 'Seleziona un modello compatibile con il provider scelto. Per Anthropic inizia con Haiku (accessibile su tutti i piani).';
 $_MODULE['<{simpleblogtranslator}prestashop>simpleblogtranslator_ee7a8e262285ed49ea1b4e4ae11525bd'] = 'Temperatura';
 $_MODULE['<{simpleblogtranslator}prestashop>simpleblogtranslator_4f58ca6728c1db22451a7d8504652dd4'] = '0 = deterministico/preciso, 1 = bilanciato, 2 = creativo (solo OpenAI). Massimo 1 per Anthropic. Consigliato: 0';
+$_MODULE['<{simpleblogtranslator}prestashop>simpleblogtranslator_f2a61fb60c540c72e3c88aa29e864bd5'] = 'Disponibile solo per i modelli Anthropic supportati. È disabilitata per i modelli GPT-5 disponibili.';
 $_MODULE['<{simpleblogtranslator}prestashop>simpleblogtranslator_a82c4ea6352017b8cbe19837e6f2a4af'] = 'Modalità debug';
 $_MODULE['<{simpleblogtranslator}prestashop>simpleblogtranslator_d1a37da7965d49450c0f775549074ef2'] = 'Scrive informazioni di debug dettagliate nei log di PrestaShop (Logger). Disabilita in produzione.';
 $_MODULE['<{simpleblogtranslator}prestashop>simpleblogtranslator_00d23a76e43b46dae9ec7aa9dcbebb32'] = 'Abilitata';

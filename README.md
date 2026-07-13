@@ -7,10 +7,11 @@ PrestaShop module that translates **PrestaHome SimpleBlog** articles using the *
 ## Features
 
 - Translate article title, meta title, meta description, excerpt and full content
-- Supports **OpenAI** (GPT-4o, GPT-4.1, GPT-5 …) and **Anthropic** (Claude Haiku, Sonnet, Opus)
+- Supports curated **OpenAI** (GPT-5.4, GPT-5.5, GPT-5.6) and **Anthropic** (Claude Haiku, Sonnet, Opus) models
 - AI-powered **SEO meta regeneration** (meta title + meta description) for any language
 - Bulk translation queue with real-time progress log and stop button
 - Provider/model switcher with live compatibility filter in the back office
+- Branded configuration header with Blog Translator, README, changelog, and API-test actions
 - Built-in **API connection test** — lists accessible models for the saved key
 - Debug mode → detailed logs in PrestaShop logger
 - Customisable system prompt (supports `[from_lang]` / `[to_lang]` placeholders)
@@ -49,7 +50,6 @@ PrestaShop module that translates **PrestaHome SimpleBlog** articles using the *
 | **OpenAI API Key** | Secret key starting with `sk-…` |
 | **Anthropic API Key** | Secret key starting with `sk-ant-…` |
 | **Model** | Provider-filtered dropdown (only compatible models shown) |
-| **Temperature** | 0 = deterministic, 1 = balanced, 2 = creative (OpenAI only; clamped to 1 for Anthropic) |
 | **Debug Mode** | Writes verbose logs to PrestaShop logger |
 | **Translation Phrase** | System prompt — must contain `[from_lang]` and `[to_lang]` |
 
@@ -72,10 +72,10 @@ The queue runs sequentially. Progress, per-article status and any errors are sho
 ## Supported models
 
 ### OpenAI
-`gpt-5.5` · `gpt-5.5-pro` · `gpt-5.4` · `gpt-5.4-mini` · `gpt-5.4-nano` · `gpt-5` · `gpt-5-mini` · `gpt-4.1` · `gpt-4.1-mini` *(recommended)* · `gpt-4.1-nano` · `gpt-4o` · `gpt-4o-mini`
+`gpt-5.6-luna` · `gpt-5.6-sol` · `gpt-5.6-terra` · `gpt-5.5` · `gpt-5.5-pro` · `gpt-5.4` · `gpt-5.4-mini`
 
 ### Anthropic
-`claude-opus-4-8` · `claude-opus-4-7` · `claude-haiku-4-5-20251001` *(recommended)* · `claude-sonnet-4-5-20250929` · `claude-sonnet-4-6` · `claude-opus-4-6`
+`claude-sonnet-5` · `claude-fable-5` · `claude-opus-4-8` · `claude-sonnet-4-6` · `claude-haiku-4-5-20251001`
 
 ---
 

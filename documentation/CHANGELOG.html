@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>simpleblogtranslator - Changelog</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --text: #1f2933;
+            --muted: #5f6b7a;
+            --border: #d8dee6;
+            --panel: #f6f8fa;
+            --accent: #0b7285;
+        }
+        body {
+            margin: 0;
+            background: #fff;
+            color: var(--text);
+            font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+        }
+        main {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 32px 24px 56px;
+        }
+        h1, h2, h3, h4 {
+            line-height: 1.25;
+            margin: 1.8em 0 .6em;
+        }
+        h1 {
+            margin-top: 0;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 2rem;
+        }
+        h2 {
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            font-size: 1.45rem;
+        }
+        h3 {
+            font-size: 1.18rem;
+        }
+        p {
+            margin: .7em 0;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        blockquote {
+            margin: 1em 0;
+            padding: .7em 1em;
+            color: var(--muted);
+            border-left: 4px solid var(--border);
+            background: var(--panel);
+        }
+        code {
+            padding: .15em .35em;
+            border-radius: 4px;
+            background: var(--panel);
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            font-size: .92em;
+        }
+        pre {
+            overflow: auto;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--panel);
+        }
+        pre code {
+            padding: 0;
+            background: transparent;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+        th, td {
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            vertical-align: top;
+        }
+        th {
+            background: var(--panel);
+            text-align: left;
+        }
+        ul, ol {
+            padding-left: 1.5em;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 2em 0;
+        }
+        .generated-note {
+            margin-bottom: 24px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--panel);
+            color: var(--muted);
+            font-size: .92em;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="generated-note">Generated from the Markdown source included with the module.</div>
+<h1>Changelog</h1>
+<p>All notable changes to <strong>SimpleBlog Translator</strong> are documented in this file.</p>
+<p>The format follows <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a>. Versioning follows <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<hr>
+<h2>[1.1.3] — 2026-07-13</h2>
+<h3>Changed</h3>
+<ul>
+<li>Aligned the curated OpenAI and Anthropic model selector with Art Blog Creator, including GPT-5.6 and Claude 5 entries.</li>
+<li>Defaulted new OpenAI configurations and connection-test fallbacks to <code>gpt-5.4-mini</code>.</li>
+<li>Removed the unused temperature configuration and API parameter.</li>
+<li>Added a branded configuration header with documentation, API test, and Blog Translator actions.</li>
+</ul>
+<h3>Security</h3>
+<ul>
+<li>Validated the selected model against the provider-specific allowlist before persisting the configuration.</li>
+</ul>
+<hr>
+<h2>[1.1.2] — 2026-06-08</h2>
+<h3>Fixed</h3>
+<ul>
+<li>Addressed PrestaShop validator warnings for directory guards, Smarty escaping, translation array syntax, and formatting.</li>
+<li>Fixed OpenAI translation failures with newer GPT models by using <code>max_completion_tokens</code>, omitting unsupported temperature parameters, and surfacing the provider error in AJAX responses.</li>
+</ul>
+<hr>
+<h2>[1.1.1] — 2026-06-08</h2>
+<h3>Changed</h3>
+<ul>
+<li>Model selector aligned with the current text-generation models used by Art Blog Creator: added <code>gpt-5.5</code>, <code>gpt-5.5-pro</code>, <code>claude-opus-4-8</code>, and <code>claude-opus-4-7</code>.</li>
+</ul>
+<hr>
+<h2>[1.1.0] — 2026-03-27</h2>
+<h3>Added</h3>
+<ul>
+<li><strong>Anthropic API support</strong> — translate with Claude Haiku, Sonnet and Opus alongside OpenAI models</li>
+<li><strong>Provider selector</strong> in configuration (OpenAI / Anthropic)</li>
+<li><strong>Anthropic API Key</strong> field (masked, preserved on re-save)</li>
+<li><strong>API Connection Test</strong> button — calls <code>/v1/models</code> on the saved provider (zero token cost) and reports which models are accessible for the key</li>
+<li><strong>Model compatibility filter</strong> — the Model dropdown dynamically hides models incompatible with the selected provider</li>
+<li><code>copyright.tpl</code> credits panel on configuration page (consistent with other Tecnoacquisti modules)</li>
+<li><code>shop_base_url</code> Smarty variable passed to admin templates</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Module description updated to mention both OpenAI and Anthropic</li>
+<li>Model list extended with full date-suffixed Anthropic IDs (<code>claude-haiku-4-5-20251001</code>, <code>claude-sonnet-4-5-20250929</code>, <code>claude-opus-4-5-20251101</code>) and Claude 4.6 aliases</li>
+<li>API error messages now include the raw provider error text (surfaced in AJAX response via <code>$lastApiError</code>)</li>
+<li>Anthropic temperature clamped to 1.0 (API maximum)</li>
+<li>Form legend renamed from &quot;OpenAI API Configuration&quot; to &quot;AI API Configuration&quot;</li>
+<li>Default fallback model for Anthropic provider changed to <code>claude-haiku-4-5-20251001</code></li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Generic &quot;AI API error on field&quot; message replaced by the actual provider error (e.g. model not found, quota exceeded)</li>
+</ul>
+<hr>
+<h2>[1.0.0] — 2026-01-15</h2>
+<h3>Added</h3>
+<ul>
+<li>Initial release</li>
+<li>Translate SimpleBlog articles via OpenAI Chat Completions API</li>
+<li>Supported fields: <code>title</code>, <code>meta_title</code>, <code>meta_description</code>, <code>short_content</code>, <code>content</code> (optional)</li>
+<li>AI-powered SEO meta regeneration (<code>meta_title</code> + <code>meta_description</code>) for any language</li>
+<li>Bulk translation queue with real-time progress bar, per-article log and Stop button</li>
+<li>Source language selector, title search, active filter, sort order and per-page options</li>
+<li>Select all / deselect all controls</li>
+<li>Translated language badges displayed inline on article rows</li>
+<li>Customisable system prompt with <code>[from_lang]</code> / <code>[to_lang]</code> placeholders</li>
+<li>Temperature and Debug Mode settings</li>
+<li>Automatic tab placement under the SimpleBlog parent menu entry</li>
+<li><code>fixTabParent</code> hook to correct tab position without reinstalling</li>
+<li>PrestaShop 1.7.8 → 9.x compatibility</li>
+</ul>
+
+</main>
+</body>
+</html>

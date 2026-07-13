@@ -18,7 +18,7 @@ class SimpleBlogTranslator extends Module
     {
         $this->name = 'simpleblogtranslator';
         $this->tab = 'administration';
-        $this->version = '1.1.2';
+        $this->version = '1.1.3';
         $this->author = 'Tecnoacquisti.com';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -50,10 +50,9 @@ class SimpleBlogTranslator extends Module
     private function setDefaults()
     {
         Configuration::updateValue(self::CFG . 'PROVIDER', 'openai');
-        Configuration::updateValue(self::CFG . 'MODEL', 'gpt-4o-mini');
+        Configuration::updateValue(self::CFG . 'MODEL', 'gpt-5.4-mini');
         Configuration::updateValue(self::CFG . 'ANTHROPIC_API_KEY', '');
         Configuration::updateValue(self::CFG . 'DEBUG', '0');
-        Configuration::updateValue(self::CFG . 'TEMPERATURE', '0');
         Configuration::updateValue(
             self::CFG . 'PHRASE',
             'Translate this content from [from_lang] to [to_lang]. '
@@ -156,6 +155,11 @@ class SimpleBlogTranslator extends Module
     public function hookActionAdminControllerSetMedia()
     {
         $this->fixTabParent();
+
+        if ((string) Tools::getValue('configure') === $this->name) {
+            $this->context->controller->addCSS($this->_path . 'views/css/simpleblogtranslator.css');
+            $this->context->controller->addCSS($this->_path . 'views/css/configure.css');
+        }
     }
 
     public function getContent()
@@ -181,13 +185,21 @@ class SimpleBlogTranslator extends Module
             'sbt_ajax_url' => $this->context->link->getAdminLink('AdminSimpleBlogTranslator', false),
             'sbt_ajax_token' => Tools::getAdminTokenLite('AdminSimpleBlogTranslator'),
             'shop_base_url' => $this->context->link->getBaseLink((int) $this->context->shop->id, $useSsl),
+            'sbt_module_display_name' => $this->displayName,
+            'sbt_module_description' => $this->description,
+            'sbt_module_version' => $this->version,
+            'sbt_module_logo_url' => $this->_path . 'logo.png',
+            'sbt_readme_url' => $this->_path . 'documentation/README.html',
+            'sbt_changelog_url' => $this->_path . 'documentation/CHANGELOG.html',
         ]);
 
+        $headerPath = _PS_MODULE_DIR_ . $this->name . '/views/templates/admin/configure_header.tpl';
         $tplPath = _PS_MODULE_DIR_ . $this->name . '/views/templates/admin/configure.tpl';
+        $header = $this->context->smarty->fetch($headerPath);
         $btnHtml = $this->context->smarty->fetch($tplPath);
         $copyright = $this->context->smarty->fetch($this->local_path . 'views/templates/admin/copyright.tpl');
 
-        return $output . $btnHtml . $this->renderConfigForm() . $copyright;
+        return $header . $output . $this->renderConfigForm() . $btnHtml . $copyright;
     }
 
     private function processConfigForm()
@@ -197,8 +209,7 @@ class SimpleBlogTranslator extends Module
         $provider = Tools::getValue(self::CFG . 'PROVIDER', 'openai');
         $apiKey = trim(Tools::getValue(self::CFG . 'API_KEY', ''));
         $anthropicKey = trim(Tools::getValue(self::CFG . 'ANTHROPIC_API_KEY', ''));
-        $model = Tools::getValue(self::CFG . 'MODEL', 'gpt-4o-mini');
-        $temperature = Tools::getValue(self::CFG . 'TEMPERATURE', '0');
+        $model = Tools::getValue(self::CFG . 'MODEL', 'gpt-5.4-mini');
         $phrase = trim(Tools::getValue(self::CFG . 'PHRASE', ''));
 
         // If a key field was left blank or masked, keep the existing saved key
@@ -217,8 +228,8 @@ class SimpleBlogTranslator extends Module
         if (!in_array($provider, ['openai', 'anthropic'])) {
             $errors[] = $this->l('Invalid provider selected.');
         }
-        if (!is_numeric($temperature) || $temperature < 0 || $temperature > 2) {
-            $errors[] = $this->l('Temperature must be a number between 0 and 2.');
+        if (!$this->isModelAvailableForProvider($model, $provider)) {
+            $errors[] = $this->l('Invalid model selected for the selected provider.');
         }
         if (strpos($phrase, '[from_lang]') === false || strpos($phrase, '[to_lang]') === false) {
             $errors[] = $this->l('The translation phrase must contain [from_lang] and [to_lang] placeholders.');
@@ -232,7 +243,6 @@ class SimpleBlogTranslator extends Module
         Configuration::updateValue(self::CFG . 'API_KEY', $apiKey);
         Configuration::updateValue(self::CFG . 'ANTHROPIC_API_KEY', $anthropicKey);
         Configuration::updateValue(self::CFG . 'MODEL', $model);
-        Configuration::updateValue(self::CFG . 'TEMPERATURE', $temperature);
         Configuration::updateValue(self::CFG . 'PHRASE', $phrase);
         Configuration::updateValue(self::CFG . 'DEBUG', Tools::getValue(self::CFG . 'DEBUG', 0) ? '1' : '0');
 
@@ -247,26 +257,18 @@ class SimpleBlogTranslator extends Module
         ];
 
         $models = [
-            // OpenAI
-            ['id' => 'gpt-5.5',           'name' => '[OpenAI] GPT-5.5'],
-            ['id' => 'gpt-5.5-pro',       'name' => '[OpenAI] GPT-5.5 Pro'],
-            ['id' => 'gpt-5.4',           'name' => '[OpenAI] GPT-5.4'],
-            ['id' => 'gpt-5.4-mini',      'name' => '[OpenAI] GPT-5.4 mini'],
-            ['id' => 'gpt-5.4-nano',      'name' => '[OpenAI] GPT-5.4 nano'],
-            ['id' => 'gpt-5',             'name' => '[OpenAI] GPT-5'],
-            ['id' => 'gpt-5-mini',        'name' => '[OpenAI] GPT-5 mini'],
-            ['id' => 'gpt-4.1',           'name' => '[OpenAI] GPT-4.1'],
-            ['id' => 'gpt-4.1-mini',      'name' => '[OpenAI] GPT-4.1 mini (recommended)'],
-            ['id' => 'gpt-4.1-nano',      'name' => '[OpenAI] GPT-4.1 nano'],
-            ['id' => 'gpt-4o',            'name' => '[OpenAI] GPT-4o'],
-            ['id' => 'gpt-4o-mini',       'name' => '[OpenAI] GPT-4o mini'],
-            // Anthropic
+            ['id' => 'gpt-5.6-luna',               'name' => '[OpenAI] GPT-5.6 Luna'],
+            ['id' => 'gpt-5.6-sol',                'name' => '[OpenAI] GPT-5.6 Sol'],
+            ['id' => 'gpt-5.6-terra',              'name' => '[OpenAI] GPT-5.6 Terra'],
+            ['id' => 'gpt-5.5',                    'name' => '[OpenAI] GPT-5.5'],
+            ['id' => 'gpt-5.5-pro',                'name' => '[OpenAI] GPT-5.5 Pro'],
+            ['id' => 'gpt-5.4',                    'name' => '[OpenAI] GPT-5.4'],
+            ['id' => 'gpt-5.4-mini',               'name' => '[OpenAI] GPT-5.4 mini'],
+            ['id' => 'claude-sonnet-5',            'name' => '[Anthropic] Claude Sonnet 5'],
+            ['id' => 'claude-fable-5',             'name' => '[Anthropic] Claude Fable 5'],
             ['id' => 'claude-opus-4-8',            'name' => '[Anthropic] Claude Opus 4.8'],
-            ['id' => 'claude-opus-4-7',            'name' => '[Anthropic] Claude Opus 4.7'],
-            ['id' => 'claude-haiku-4-5-20251001',  'name' => '[Anthropic] Claude Haiku 4.5 (recommended)'],
-            ['id' => 'claude-sonnet-4-5-20250929', 'name' => '[Anthropic] Claude Sonnet 4.5'],
             ['id' => 'claude-sonnet-4-6',          'name' => '[Anthropic] Claude Sonnet 4.6'],
-            ['id' => 'claude-opus-4-6',            'name' => '[Anthropic] Claude Opus 4.6 (Tier 2+)'],
+            ['id' => 'claude-haiku-4-5-20251001',  'name' => '[Anthropic] Claude Haiku 4.5'],
         ];
 
         $savedKey = (string) Configuration::get(self::CFG . 'API_KEY');
@@ -320,16 +322,6 @@ class SimpleBlogTranslator extends Module
                         'desc' => $this->l('Select a model matching the chosen provider. For Anthropic, start with Haiku (accessible on all tiers).'),
                     ],
                     [
-                        'type' => 'text',
-                        'label' => $this->l('Temperature'),
-                        'name' => self::CFG . 'TEMPERATURE',
-                        'col' => 2,
-                        'desc' => $this->l(
-                            '0 = deterministic/precise, 1 = balanced, 2 = creative (OpenAI only). '
-                            . 'Anthropic max is 1. Recommended: 0'
-                        ),
-                    ],
-                    [
                         'type' => 'switch',
                         'label' => $this->l('Debug Mode'),
                         'name' => self::CFG . 'DEBUG',
@@ -371,18 +363,49 @@ class SimpleBlogTranslator extends Module
         $helper->token = Tools::getAdminTokenLite('AdminModules');
 
         $cfgPhrase = Configuration::get(self::CFG . 'PHRASE');
-        $cfgTemp = Configuration::get(self::CFG . 'TEMPERATURE');
-
         $helper->fields_value = [
             self::CFG . 'PROVIDER' => Configuration::get(self::CFG . 'PROVIDER') ?: 'openai',
             self::CFG . 'API_KEY' => $maskedKey,
             self::CFG . 'ANTHROPIC_API_KEY' => $maskedAnthropicKey,
-            self::CFG . 'MODEL' => Configuration::get(self::CFG . 'MODEL') ?: 'gpt-4o-mini',
+            self::CFG . 'MODEL' => Configuration::get(self::CFG . 'MODEL') ?: 'gpt-5.4-mini',
             self::CFG . 'DEBUG' => (int) Configuration::get(self::CFG . 'DEBUG'),
-            self::CFG . 'TEMPERATURE' => ($cfgTemp !== false) ? $cfgTemp : '0',
             self::CFG . 'PHRASE' => $cfgPhrase ?: '',
         ];
 
         return $helper->generateForm($fieldsForm);
+    }
+
+    /**
+     * Check that a model belongs to the selected provider.
+     *
+     * @param string $model Model identifier submitted by the merchant
+     * @param string $provider Selected AI provider
+     *
+     * @return bool
+     */
+    private function isModelAvailableForProvider($model, $provider)
+    {
+        $models = [
+            'openai' => [
+                'gpt-5.6-luna',
+                'gpt-5.6-sol',
+                'gpt-5.6-terra',
+                'gpt-5.5',
+                'gpt-5.5-pro',
+                'gpt-5.4',
+                'gpt-5.4-mini',
+            ],
+            'anthropic' => [
+                'claude-sonnet-5',
+                'claude-fable-5',
+                'claude-opus-4-8',
+                'claude-sonnet-4-6',
+                'claude-haiku-4-5-20251001',
+            ],
+        ];
+
+        return is_string($provider)
+            && isset($models[$provider])
+            && in_array($model, $models[$provider], true);
     }
 }
