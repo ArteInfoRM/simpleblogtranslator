@@ -35,6 +35,6 @@
 .gitattributes  export-ignore
 .gitignore      export-ignore
 .editorconfig   export-ignore
-CHANGELOG.md    export-ignore
 config*.xml     export-ignore
 dist/           export-ignore
+/sbom.cdx.json  export-ignore

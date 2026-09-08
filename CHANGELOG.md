@@ -7,6 +7,18 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+---
+
+## [1.1.4] — 2026-09-08
+
+### Added
+
+- Added GPT-6 Astra and Claude Opus 5 to the curated AI model selector.
+
+---
+
 ## [1.1.3] — 2026-07-13
 
 ### Changed

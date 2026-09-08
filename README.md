@@ -7,7 +7,7 @@ PrestaShop module that translates **PrestaHome SimpleBlog** articles using the *
 ## Features
 
 - Translate article title, meta title, meta description, excerpt and full content
-- Supports curated **OpenAI** (GPT-5.4, GPT-5.5, GPT-5.6) and **Anthropic** (Claude Haiku, Sonnet, Opus) models
+- Supports curated **OpenAI** (GPT-5.4, GPT-5.5, GPT-5.6, GPT-6 Astra) and **Anthropic** (Claude Haiku, Sonnet, Opus) models
 - AI-powered **SEO meta regeneration** (meta title + meta description) for any language
 - Bulk translation queue with real-time progress log and stop button
 - Provider/model switcher with live compatibility filter in the back office
@@ -25,6 +25,7 @@ PrestaShop module that translates **PrestaHome SimpleBlog** articles using the *
 |---|---|
 | PrestaShop | 1.7.8 → **9.x** (tested on PS9) |
 | PHP | ≥ 8.1 |
+| PHP cURL | Required for OpenAI and Anthropic API requests |
 | SimpleBlog for PrestaShop | any recent version |
 | OpenAI API key **or** Anthropic API key | — |
 
@@ -72,10 +73,18 @@ The queue runs sequentially. Progress, per-article status and any errors are sho
 ## Supported models
 
 ### OpenAI
-`gpt-5.6-luna` · `gpt-5.6-sol` · `gpt-5.6-terra` · `gpt-5.5` · `gpt-5.5-pro` · `gpt-5.4` · `gpt-5.4-mini`
+`gpt-6-astra` · `gpt-5.6-luna` · `gpt-5.6-sol` · `gpt-5.6-terra` · `gpt-5.5` · `gpt-5.5-pro` · `gpt-5.4` · `gpt-5.4-mini`
 
 ### Anthropic
-`claude-sonnet-5` · `claude-fable-5` · `claude-opus-4-8` · `claude-sonnet-4-6` · `claude-haiku-4-5-20251001`
+`claude-sonnet-5` · `claude-fable-5` · `claude-opus-5` · `claude-opus-4-8` · `claude-sonnet-4-6` · `claude-haiku-4-5-20251001`
+
+---
+
+## Security and release documentation
+
+- [Security policy](SECURITY.md) — private vulnerability reporting and supported release line.
+- [Third-party notices](THIRD-PARTY-NOTICES.md) — packaged dependencies and external services.
+- [CRA readiness note](CRA.md) — release-facing scope and security information; it is not a declaration of conformity.
 
 ---
 

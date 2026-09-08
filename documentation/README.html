@@ -119,7 +119,7 @@
 <h2>Features</h2>
 <ul>
 <li>Translate article title, meta title, meta description, excerpt and full content</li>
-<li>Supports curated <strong>OpenAI</strong> (GPT-5.4, GPT-5.5, GPT-5.6) and <strong>Anthropic</strong> (Claude Haiku, Sonnet, Opus) models</li>
+<li>Supports curated <strong>OpenAI</strong> (GPT-5.4, GPT-5.5, GPT-5.6, GPT-6 Astra) and <strong>Anthropic</strong> (Claude Haiku, Sonnet, Opus) models</li>
 <li>AI-powered <strong>SEO meta regeneration</strong> (meta title + meta description) for any language</li>
 <li>Bulk translation queue with real-time progress log and stop button</li>
 <li>Provider/model switcher with live compatibility filter in the back office</li>
@@ -131,7 +131,7 @@
 </ul>
 <hr>
 <h2>Requirements</h2>
-<table><thead><tr><th>Dependency</th><th>Version</th></tr></thead><tbody><tr><td>PrestaShop</td><td>1.7.8 → <strong>9.x</strong> (tested on PS9)</td></tr><tr><td>PHP</td><td>≥ 8.1</td></tr><tr><td>SimpleBlog for PrestaShop</td><td>any recent version</td></tr><tr><td>OpenAI API key <strong>or</strong> Anthropic API key</td><td>—</td></tr></tbody></table>
+<table><thead><tr><th>Dependency</th><th>Version</th></tr></thead><tbody><tr><td>PrestaShop</td><td>1.7.8 → <strong>9.x</strong> (tested on PS9)</td></tr><tr><td>PHP</td><td>≥ 8.1</td></tr><tr><td>PHP cURL</td><td>Required for OpenAI and Anthropic API requests</td></tr><tr><td>SimpleBlog for PrestaShop</td><td>any recent version</td></tr><tr><td>OpenAI API key <strong>or</strong> Anthropic API key</td><td>—</td></tr></tbody></table>
 <blockquote><strong>Anthropic keys</strong> must be created at <a href="https://console.anthropic.com">console.anthropic.com</a> (billing required for Claude 4.x models). <strong>OpenAI keys</strong> are available at <a href="https://platform.openai.com">platform.openai.com</a>.</blockquote>
 <hr>
 <h2>Installation</h2>
@@ -158,9 +158,16 @@
 <hr>
 <h2>Supported models</h2>
 <h3>OpenAI</h3>
-<p><code>gpt-5.6-luna</code> · <code>gpt-5.6-sol</code> · <code>gpt-5.6-terra</code> · <code>gpt-5.5</code> · <code>gpt-5.5-pro</code> · <code>gpt-5.4</code> · <code>gpt-5.4-mini</code></p>
+<p><code>gpt-6-astra</code> · <code>gpt-5.6-luna</code> · <code>gpt-5.6-sol</code> · <code>gpt-5.6-terra</code> · <code>gpt-5.5</code> · <code>gpt-5.5-pro</code> · <code>gpt-5.4</code> · <code>gpt-5.4-mini</code></p>
 <h3>Anthropic</h3>
-<p><code>claude-sonnet-5</code> · <code>claude-fable-5</code> · <code>claude-opus-4-8</code> · <code>claude-sonnet-4-6</code> · <code>claude-haiku-4-5-20251001</code></p>
+<p><code>claude-sonnet-5</code> · <code>claude-fable-5</code> · <code>claude-opus-5</code> · <code>claude-opus-4-8</code> · <code>claude-sonnet-4-6</code> · <code>claude-haiku-4-5-20251001</code></p>
+<hr>
+<h2>Security and release documentation</h2>
+<ul>
+<li><a href="SECURITY.md">Security policy</a> — private vulnerability reporting and supported release line.</li>
+<li><a href="THIRD-PARTY-NOTICES.md">Third-party notices</a> — packaged dependencies and external services.</li>
+<li><a href="CRA.md">CRA readiness note</a> — release-facing scope and security information; it is not a declaration of conformity.</li>
+</ul>
 <hr>
 <h2>License</h2>
 <p>Academic Free License 3.0 — see <a href="LICENSE">LICENSE</a>.</p>

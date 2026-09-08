@@ -1,0 +1,66 @@
+{
+  "$schema": "https://bom.cyclonedx.org/schema/bom-1.5.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:332c724f-6f7f-4341-837b-b0c3f7cac51a",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-09-08T00:00:00Z",
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "name": "Manual release inventory",
+          "version": "1.0"
+        }
+      ]
+    },
+    "component": {
+      "type": "application",
+      "bom-ref": "pkg:generic/arteinformatica/simpleblogtranslator@1.1.4",
+      "supplier": {
+        "name": "Arte e Informatica di Loris Modena e C. s.a.s."
+      },
+      "name": "simpleblogtranslator",
+      "version": "1.1.4",
+      "description": "AI translation module for PrestaHome SimpleBlog articles.",
+      "licenses": [
+        {
+          "license": {
+            "id": "AFL-3.0"
+          }
+        }
+      ],
+      "purl": "pkg:generic/arteinformatica/simpleblogtranslator@1.1.4"
+    }
+  },
+  "components": [],
+  "services": [
+    {
+      "bom-ref": "urn:tecnoacquisti:simpleblogtranslator:openai-service",
+      "provider": {
+        "name": "OpenAI"
+      },
+      "name": "OpenAI API",
+      "description": "External AI translation service selected and configured by the merchant.",
+      "authenticated": true,
+      "x-trust-boundary": true
+    },
+    {
+      "bom-ref": "urn:tecnoacquisti:simpleblogtranslator:anthropic-service",
+      "provider": {
+        "name": "Anthropic"
+      },
+      "name": "Anthropic API",
+      "description": "External AI translation service selected and configured by the merchant.",
+      "authenticated": true,
+      "x-trust-boundary": true
+    }
+  ],
+  "properties": [
+    {
+      "name": "cdx:release:inventory-scope",
+      "value": "No third-party library, SDK, or vendored dependency is included in the release package. PrestaShop, PrestaHome SimpleBlog, and PHP are environment dependencies."
+    }
+  ]
+}

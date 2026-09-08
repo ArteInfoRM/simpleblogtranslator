@@ -5,6 +5,7 @@
  * @author    Tecnoacquisti.com
  * @copyright 2026 Tecnoacquisti.com
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
+ * @version   1.1.4
  */
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -18,7 +19,7 @@ class SimpleBlogTranslator extends Module
     {
         $this->name = 'simpleblogtranslator';
         $this->tab = 'administration';
-        $this->version = '1.1.3';
+        $this->version = '1.1.4';
         $this->author = 'Tecnoacquisti.com';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -257,6 +258,7 @@ class SimpleBlogTranslator extends Module
         ];
 
         $models = [
+            ['id' => 'gpt-6-astra',              'name' => '[OpenAI] GPT-6 Astra'],
             ['id' => 'gpt-5.6-luna',               'name' => '[OpenAI] GPT-5.6 Luna'],
             ['id' => 'gpt-5.6-sol',                'name' => '[OpenAI] GPT-5.6 Sol'],
             ['id' => 'gpt-5.6-terra',              'name' => '[OpenAI] GPT-5.6 Terra'],
@@ -266,6 +268,7 @@ class SimpleBlogTranslator extends Module
             ['id' => 'gpt-5.4-mini',               'name' => '[OpenAI] GPT-5.4 mini'],
             ['id' => 'claude-sonnet-5',            'name' => '[Anthropic] Claude Sonnet 5'],
             ['id' => 'claude-fable-5',             'name' => '[Anthropic] Claude Fable 5'],
+            ['id' => 'claude-opus-5',              'name' => '[Anthropic] Claude Opus 5'],
             ['id' => 'claude-opus-4-8',            'name' => '[Anthropic] Claude Opus 4.8'],
             ['id' => 'claude-sonnet-4-6',          'name' => '[Anthropic] Claude Sonnet 4.6'],
             ['id' => 'claude-haiku-4-5-20251001',  'name' => '[Anthropic] Claude Haiku 4.5'],
@@ -387,6 +390,7 @@ class SimpleBlogTranslator extends Module
     {
         $models = [
             'openai' => [
+                'gpt-6-astra',
                 'gpt-5.6-luna',
                 'gpt-5.6-sol',
                 'gpt-5.6-terra',
@@ -398,6 +402,7 @@ class SimpleBlogTranslator extends Module
             'anthropic' => [
                 'claude-sonnet-5',
                 'claude-fable-5',
+                'claude-opus-5',
                 'claude-opus-4-8',
                 'claude-sonnet-4-6',
                 'claude-haiku-4-5-20251001',
