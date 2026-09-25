@@ -3,7 +3,7 @@
  * SimpleBlog Translator - Admin Controller
  *
  * @author    Custom
- * @copyright 2024 Custom
+ * @copyright 2024-2026 Custom
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
 if (!defined('_PS_VERSION_')) {
@@ -437,8 +437,10 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
             return ['success' => false, 'message' => 'Source and target language are the same'];
         }
 
-        $defaultModel = ($provider === 'anthropic') ? 'claude-haiku-4-5-20251001' : 'gpt-5.4-mini';
-        $model = Configuration::get('SIMPLEBLOGTRANSLATOR_MODEL') ?: $defaultModel;
+        $model = $this->getConfiguredModel($provider);
+        if ($model === false) {
+            return ['success' => false, 'message' => 'Select a valid model for the configured AI provider.'];
+        }
         $phrase = Configuration::get('SIMPLEBLOGTRANSLATOR_PHRASE')
             ?: 'Translate from {from_lang} to {to_lang}. Preserve HTML. Return only the translation.';
 
@@ -562,8 +564,10 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
     private function processRegenMeta($idPost, $sourceLangId, $targetLangId, $source, $apiKey)
     {
         $provider = Configuration::get('SIMPLEBLOGTRANSLATOR_PROVIDER') ?: 'openai';
-        $defaultModel = ($provider === 'anthropic') ? 'claude-haiku-4-5-20251001' : 'gpt-5.4-mini';
-        $model = Configuration::get('SIMPLEBLOGTRANSLATOR_MODEL') ?: $defaultModel;
+        $model = $this->getConfiguredModel($provider);
+        if ($model === false) {
+            return ['success' => false, 'message' => 'Select a valid model for the configured AI provider.'];
+        }
         $targetLang = new Language($targetLangId);
 
         // If target == source we regenerate in the source language itself
@@ -721,7 +725,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
     {
         $payloadArr = [
             'model' => $model,
-            'max_completion_tokens' => 300,
+            'max_completion_tokens' => 2000,
             'response_format' => ['type' => 'json_object'],
             'messages' => [
                 ['role' => 'user', 'content' => $userPrompt],
@@ -790,8 +794,10 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
             }
         }
 
-        $defaultModel = ($provider === 'anthropic') ? 'claude-haiku-4-5-20251001' : 'gpt-5.4-mini';
-        $model = Configuration::get('SIMPLEBLOGTRANSLATOR_MODEL') ?: $defaultModel;
+        $model = $this->getConfiguredModel($provider);
+        if ($model === false) {
+            return ['success' => false, 'message' => 'Select a valid model for the configured AI provider.'];
+        }
 
         if ($provider === 'anthropic') {
             return $this->testAnthropic($apiKey, $model, $provider);
@@ -868,7 +874,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
     {
         $prefix = '[Provider: ' . $provider . ' | Model: ' . $model . '] ';
         // Use GET /v1/models - no tokens consumed, returns the list of accessible models
-        $ch = curl_init('https://api.anthropic.com/v1/models?limit=20');
+        $ch = curl_init('https://api.anthropic.com/v1/models?limit=1000');
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPGET => true,
@@ -1009,7 +1015,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
 
         $decoded = json_decode($response, true);
 
-        return isset($decoded['content'][0]['text']) ? $decoded['content'][0]['text'] : false;
+        return $this->extractAnthropicText($decoded);
     }
 
     /**
@@ -1021,7 +1027,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
     {
         $payload = json_encode([
             'model' => $model,
-            'max_tokens' => 300,
+            'max_tokens' => 2000,
             'messages' => [
                 ['role' => 'user', 'content' => $userPrompt],
             ],
@@ -1068,7 +1074,50 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
 
         $decoded = json_decode($response, true);
 
-        return isset($decoded['content'][0]['text']) ? $decoded['content'][0]['text'] : false;
+        return $this->extractAnthropicText($decoded);
+    }
+
+    /**
+     * Return the configured model only when it belongs to the selected provider.
+     *
+     * @param string $provider Configured AI provider
+     *
+     * @return string|false
+     */
+    private function getConfiguredModel($provider)
+    {
+        $savedModel = (string) Configuration::get('SIMPLEBLOGTRANSLATOR_MODEL');
+        $defaultModel = $provider === 'anthropic'
+            ? SimpleBlogTranslator::DEFAULT_ANTHROPIC_MODEL
+            : SimpleBlogTranslator::DEFAULT_OPENAI_MODEL;
+        $model = $savedModel !== '' ? $savedModel : $defaultModel;
+
+        return SimpleBlogTranslator::isModelAvailableForProvider($model, $provider, $savedModel)
+            ? $model
+            : false;
+    }
+
+    /**
+     * Collect text blocks while skipping adaptive-thinking blocks.
+     *
+     * @param array<string, mixed>|null $response Decoded Anthropic response
+     *
+     * @return string|false
+     */
+    private function extractAnthropicText($response)
+    {
+        if (!is_array($response) || !isset($response['content']) || !is_array($response['content'])) {
+            return false;
+        }
+
+        $text = '';
+        foreach ($response['content'] as $block) {
+            if (is_array($block) && isset($block['type'], $block['text']) && $block['type'] === 'text' && is_string($block['text'])) {
+                $text .= $block['text'];
+            }
+        }
+
+        return $text !== '' ? $text : false;
     }
 
     /* ================================================================== */

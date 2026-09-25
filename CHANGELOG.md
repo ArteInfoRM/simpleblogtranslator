@@ -7,7 +7,22 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [Unreleased]
+## [1.1.5] — 2026-09-25
+
+### Added
+
+- Added GPT-6 Luna and Sol, Claude Fable 5.1, and Claude Opus 5.5 to the AI model selector.
+
+### Changed
+
+- Defaulted new OpenAI configurations to GPT-6 Luna and kept known older models available only when already selected.
+- Validated configured provider and model before translation, SEO regeneration, and API connection tests.
+- Raised the SEO regeneration output ceiling to leave room for reasoning tokens in newer models.
+
+### Fixed
+
+- Extracted Claude text blocks by type so adaptive-thinking blocks do not interrupt translation or SEO regeneration.
+- Expanded the Anthropic model connection check to include up to 1,000 accessible models.
 
 ---
 

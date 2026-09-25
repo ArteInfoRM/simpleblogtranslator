@@ -2,7 +2,7 @@
  * SimpleBlog Translator - Main admin template
  *
  * @author    Custom
- * @copyright 2024 Custom
+ * @copyright 2024-2026 Custom
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  *
  * Compatible: PrestaShop 1.7.8 - 9.x

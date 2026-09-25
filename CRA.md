@@ -1,7 +1,7 @@
 # CRA readiness note
 
 This document records release-facing security information for SimpleBlog
-Translator (`simpleblogtranslator`) version 1.1.4. It is not an EU Cyber
+Translator (`simpleblogtranslator`) version 1.1.5. It is not an EU Cyber
 Resilience Act declaration of conformity and does not replace the technical
 documentation, risk assessment, vulnerability-handling process, or retention
 records that may be required for a specific distribution.

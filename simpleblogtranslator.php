@@ -5,7 +5,7 @@
  * @author    Tecnoacquisti.com
  * @copyright 2026 Tecnoacquisti.com
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
- * @version   1.1.4
+ * @version   1.1.5
  */
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -14,12 +14,14 @@ if (!defined('_PS_VERSION_')) {
 class SimpleBlogTranslator extends Module
 {
     const CFG = 'SIMPLEBLOGTRANSLATOR_';
+    const DEFAULT_OPENAI_MODEL = 'gpt-6-luna';
+    const DEFAULT_ANTHROPIC_MODEL = 'claude-haiku-4-5-20251001';
 
     public function __construct()
     {
         $this->name = 'simpleblogtranslator';
         $this->tab = 'administration';
-        $this->version = '1.1.4';
+        $this->version = '1.1.5';
         $this->author = 'Tecnoacquisti.com';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -51,7 +53,7 @@ class SimpleBlogTranslator extends Module
     private function setDefaults()
     {
         Configuration::updateValue(self::CFG . 'PROVIDER', 'openai');
-        Configuration::updateValue(self::CFG . 'MODEL', 'gpt-5.4-mini');
+        Configuration::updateValue(self::CFG . 'MODEL', self::DEFAULT_OPENAI_MODEL);
         Configuration::updateValue(self::CFG . 'ANTHROPIC_API_KEY', '');
         Configuration::updateValue(self::CFG . 'DEBUG', '0');
         Configuration::updateValue(
@@ -210,7 +212,7 @@ class SimpleBlogTranslator extends Module
         $provider = Tools::getValue(self::CFG . 'PROVIDER', 'openai');
         $apiKey = trim(Tools::getValue(self::CFG . 'API_KEY', ''));
         $anthropicKey = trim(Tools::getValue(self::CFG . 'ANTHROPIC_API_KEY', ''));
-        $model = Tools::getValue(self::CFG . 'MODEL', 'gpt-5.4-mini');
+        $model = Tools::getValue(self::CFG . 'MODEL', self::DEFAULT_OPENAI_MODEL);
         $phrase = trim(Tools::getValue(self::CFG . 'PHRASE', ''));
 
         // If a key field was left blank or masked, keep the existing saved key
@@ -229,7 +231,8 @@ class SimpleBlogTranslator extends Module
         if (!in_array($provider, ['openai', 'anthropic'])) {
             $errors[] = $this->l('Invalid provider selected.');
         }
-        if (!$this->isModelAvailableForProvider($model, $provider)) {
+        $savedModel = (string) Configuration::get(self::CFG . 'MODEL');
+        if (!self::isModelAvailableForProvider($model, $provider, $savedModel)) {
             $errors[] = $this->l('Invalid model selected for the selected provider.');
         }
         if (strpos($phrase, '[from_lang]') === false || strpos($phrase, '[to_lang]') === false) {
@@ -257,22 +260,12 @@ class SimpleBlogTranslator extends Module
             ['id' => 'anthropic', 'name' => 'Anthropic'],
         ];
 
-        $models = [
-            ['id' => 'gpt-6-astra',              'name' => '[OpenAI] GPT-6 Astra'],
-            ['id' => 'gpt-5.6-luna',               'name' => '[OpenAI] GPT-5.6 Luna'],
-            ['id' => 'gpt-5.6-sol',                'name' => '[OpenAI] GPT-5.6 Sol'],
-            ['id' => 'gpt-5.6-terra',              'name' => '[OpenAI] GPT-5.6 Terra'],
-            ['id' => 'gpt-5.5',                    'name' => '[OpenAI] GPT-5.5'],
-            ['id' => 'gpt-5.5-pro',                'name' => '[OpenAI] GPT-5.5 Pro'],
-            ['id' => 'gpt-5.4',                    'name' => '[OpenAI] GPT-5.4'],
-            ['id' => 'gpt-5.4-mini',               'name' => '[OpenAI] GPT-5.4 mini'],
-            ['id' => 'claude-sonnet-5',            'name' => '[Anthropic] Claude Sonnet 5'],
-            ['id' => 'claude-fable-5',             'name' => '[Anthropic] Claude Fable 5'],
-            ['id' => 'claude-opus-5',              'name' => '[Anthropic] Claude Opus 5'],
-            ['id' => 'claude-opus-4-8',            'name' => '[Anthropic] Claude Opus 4.8'],
-            ['id' => 'claude-sonnet-4-6',          'name' => '[Anthropic] Claude Sonnet 4.6'],
-            ['id' => 'claude-haiku-4-5-20251001',  'name' => '[Anthropic] Claude Haiku 4.5'],
-        ];
+        $models = [];
+        foreach (self::getAvailableModels((string) Configuration::get(self::CFG . 'MODEL')) as $provider => $providerModels) {
+            foreach ($providerModels as $id => $name) {
+                $models[] = ['id' => $id, 'name' => '[' . ucfirst($provider) . '] ' . $name];
+            }
+        }
 
         $savedKey = (string) Configuration::get(self::CFG . 'API_KEY');
         $maskedKey = '';
@@ -370,7 +363,7 @@ class SimpleBlogTranslator extends Module
             self::CFG . 'PROVIDER' => Configuration::get(self::CFG . 'PROVIDER') ?: 'openai',
             self::CFG . 'API_KEY' => $maskedKey,
             self::CFG . 'ANTHROPIC_API_KEY' => $maskedAnthropicKey,
-            self::CFG . 'MODEL' => Configuration::get(self::CFG . 'MODEL') ?: 'gpt-5.4-mini',
+            self::CFG . 'MODEL' => Configuration::get(self::CFG . 'MODEL') ?: self::DEFAULT_OPENAI_MODEL,
             self::CFG . 'DEBUG' => (int) Configuration::get(self::CFG . 'DEBUG'),
             self::CFG . 'PHRASE' => $cfgPhrase ?: '',
         ];
@@ -386,31 +379,59 @@ class SimpleBlogTranslator extends Module
      *
      * @return bool
      */
-    private function isModelAvailableForProvider($model, $provider)
+    public static function isModelAvailableForProvider($model, $provider, $savedModel = '')
+    {
+        if (!is_string($model) || !is_string($provider)) {
+            return false;
+        }
+
+        $models = self::getAvailableModels($savedModel);
+
+        return isset($models[$provider][$model]);
+    }
+
+    /**
+     * Return current models and preserve a known legacy model already saved by the merchant.
+     *
+     * @param string $savedModel Model currently stored in configuration
+     *
+     * @return array<string, array<string, string>>
+     */
+    public static function getAvailableModels($savedModel = '')
     {
         $models = [
             'openai' => [
-                'gpt-6-astra',
-                'gpt-5.6-luna',
-                'gpt-5.6-sol',
-                'gpt-5.6-terra',
-                'gpt-5.5',
-                'gpt-5.5-pro',
-                'gpt-5.4',
-                'gpt-5.4-mini',
+                'gpt-6-luna' => 'GPT-6 Luna',
+                'gpt-6-sol' => 'GPT-6 Sol',
+                'gpt-6-astra' => 'GPT-6 Astra',
+                'gpt-5.6-luna' => 'GPT-5.6 Luna',
+                'gpt-5.6-sol' => 'GPT-5.6 Sol',
+                'gpt-5.6-terra' => 'GPT-5.6 Terra',
             ],
             'anthropic' => [
-                'claude-sonnet-5',
-                'claude-fable-5',
-                'claude-opus-5',
-                'claude-opus-4-8',
-                'claude-sonnet-4-6',
-                'claude-haiku-4-5-20251001',
+                'claude-sonnet-5' => 'Claude Sonnet 5',
+                'claude-opus-5-5' => 'Claude Opus 5.5',
+                'claude-fable-5-1' => 'Claude Fable 5.1',
+                'claude-opus-5' => 'Claude Opus 5',
+                'claude-opus-4-8' => 'Claude Opus 4.8',
+                'claude-sonnet-4-6' => 'Claude Sonnet 4.6',
+                'claude-haiku-4-5-20251001' => 'Claude Haiku 4.5',
             ],
         ];
 
-        return is_string($provider)
-            && isset($models[$provider])
-            && in_array($model, $models[$provider], true);
+        $legacyModels = [
+            'gpt-5.5' => ['openai', 'GPT-5.5'],
+            'gpt-5.5-pro' => ['openai', 'GPT-5.5 Pro'],
+            'gpt-5.4' => ['openai', 'GPT-5.4'],
+            'gpt-5.4-mini' => ['openai', 'GPT-5.4 mini'],
+            'claude-fable-5' => ['anthropic', 'Claude Fable 5'],
+            'claude-opus-4-7' => ['anthropic', 'Claude Opus 4.7'],
+        ];
+        if (is_string($savedModel) && isset($legacyModels[$savedModel])) {
+            list($provider, $name) = $legacyModels[$savedModel];
+            $models[$provider][$savedModel] = $name . ' (existing selection)';
+        }
+
+        return $models;
     }
 }

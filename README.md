@@ -7,7 +7,7 @@ PrestaShop module that translates **PrestaHome SimpleBlog** articles using the *
 ## Features
 
 - Translate article title, meta title, meta description, excerpt and full content
-- Supports curated **OpenAI** (GPT-5.4, GPT-5.5, GPT-5.6, GPT-6 Astra) and **Anthropic** (Claude Haiku, Sonnet, Opus) models
+- Supports curated **OpenAI** (GPT-6 and GPT-5.6) and **Anthropic** (Claude Haiku, Sonnet, Opus, and Fable) models
 - AI-powered **SEO meta regeneration** (meta title + meta description) for any language
 - Bulk translation queue with real-time progress log and stop button
 - Provider/model switcher with live compatibility filter in the back office
@@ -73,10 +73,12 @@ The queue runs sequentially. Progress, per-article status and any errors are sho
 ## Supported models
 
 ### OpenAI
-`gpt-6-astra` · `gpt-5.6-luna` · `gpt-5.6-sol` · `gpt-5.6-terra` · `gpt-5.5` · `gpt-5.5-pro` · `gpt-5.4` · `gpt-5.4-mini`
+`gpt-6-luna` · `gpt-6-sol` · `gpt-6-astra` · `gpt-5.6-luna` · `gpt-5.6-sol` · `gpt-5.6-terra`
 
 ### Anthropic
-`claude-sonnet-5` · `claude-fable-5` · `claude-opus-5` · `claude-opus-4-8` · `claude-sonnet-4-6` · `claude-haiku-4-5-20251001`
+`claude-sonnet-5` · `claude-opus-5-5` · `claude-fable-5-1` · `claude-opus-5` · `claude-opus-4-8` · `claude-sonnet-4-6` · `claude-haiku-4-5-20251001`
+
+New OpenAI configurations default to `gpt-6-luna`. Older GPT-5.4, GPT-5.5, Claude Fable 5, and Claude Opus 4.7 selections remain visible only when already configured. Model availability depends on the provider account.
 
 ---
 
