@@ -5,7 +5,7 @@
  * @author    Tecnoacquisti.com
  * @copyright 2026 Tecnoacquisti.com
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
- * @version   1.1.5
+ * @version   1.1.6
  */
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -15,13 +15,13 @@ class SimpleBlogTranslator extends Module
 {
     const CFG = 'SIMPLEBLOGTRANSLATOR_';
     const DEFAULT_OPENAI_MODEL = 'gpt-6-luna';
-    const DEFAULT_ANTHROPIC_MODEL = 'claude-haiku-4-5-20251001';
+    const DEFAULT_ANTHROPIC_MODEL = 'claude-haiku-5-5';
 
     public function __construct()
     {
         $this->name = 'simpleblogtranslator';
         $this->tab = 'administration';
-        $this->version = '1.1.5';
+        $this->version = '1.1.6';
         $this->author = 'Tecnoacquisti.com';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -363,7 +363,11 @@ class SimpleBlogTranslator extends Module
             self::CFG . 'PROVIDER' => Configuration::get(self::CFG . 'PROVIDER') ?: 'openai',
             self::CFG . 'API_KEY' => $maskedKey,
             self::CFG . 'ANTHROPIC_API_KEY' => $maskedAnthropicKey,
-            self::CFG . 'MODEL' => Configuration::get(self::CFG . 'MODEL') ?: self::DEFAULT_OPENAI_MODEL,
+            self::CFG . 'MODEL' => Configuration::get(self::CFG . 'MODEL') ?: (
+                Configuration::get(self::CFG . 'PROVIDER') === 'anthropic'
+                    ? self::DEFAULT_ANTHROPIC_MODEL
+                    : self::DEFAULT_OPENAI_MODEL
+            ),
             self::CFG . 'DEBUG' => (int) Configuration::get(self::CFG . 'DEBUG'),
             self::CFG . 'PHRASE' => $cfgPhrase ?: '',
         ];
@@ -402,24 +406,27 @@ class SimpleBlogTranslator extends Module
         $models = [
             'openai' => [
                 'gpt-6-luna' => 'GPT-6 Luna',
-                'gpt-6-sol' => 'GPT-6 Sol',
+                'gpt-6.1-sol' => 'GPT-6.1 Sol',
                 'gpt-6-astra' => 'GPT-6 Astra',
-                'gpt-5.6-luna' => 'GPT-5.6 Luna',
-                'gpt-5.6-sol' => 'GPT-5.6 Sol',
-                'gpt-5.6-terra' => 'GPT-5.6 Terra',
             ],
             'anthropic' => [
-                'claude-sonnet-5' => 'Claude Sonnet 5',
+                'claude-haiku-5-5' => 'Claude Haiku 5.5',
+                'claude-sonnet-5-5' => 'Claude Sonnet 5.5',
                 'claude-opus-5-5' => 'Claude Opus 5.5',
                 'claude-fable-5-1' => 'Claude Fable 5.1',
-                'claude-opus-5' => 'Claude Opus 5',
-                'claude-opus-4-8' => 'Claude Opus 4.8',
-                'claude-sonnet-4-6' => 'Claude Sonnet 4.6',
-                'claude-haiku-4-5-20251001' => 'Claude Haiku 4.5',
             ],
         ];
 
         $legacyModels = [
+            'gpt-6-sol' => ['openai', 'GPT-6 Sol'],
+            'gpt-5.6-luna' => ['openai', 'GPT-5.6 Luna'],
+            'gpt-5.6-sol' => ['openai', 'GPT-5.6 Sol'],
+            'gpt-5.6-terra' => ['openai', 'GPT-5.6 Terra'],
+            'claude-sonnet-5' => ['anthropic', 'Claude Sonnet 5'],
+            'claude-opus-5' => ['anthropic', 'Claude Opus 5'],
+            'claude-opus-4-8' => ['anthropic', 'Claude Opus 4.8'],
+            'claude-sonnet-4-6' => ['anthropic', 'Claude Sonnet 4.6'],
+            'claude-haiku-4-5-20251001' => ['anthropic', 'Claude Haiku 4.5'],
             'gpt-5.5' => ['openai', 'GPT-5.5'],
             'gpt-5.5-pro' => ['openai', 'GPT-5.5 Pro'],
             'gpt-5.4' => ['openai', 'GPT-5.4'],

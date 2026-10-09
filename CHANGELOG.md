@@ -7,6 +7,26 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.6] - 2026-10-09
+
+### Added
+
+- Added GPT-6.1 Sol, Claude Sonnet 5.5, and Claude Haiku 5.5 to the curated AI model selector.
+
+### Changed
+
+- Offer GPT-6 Sol, GPT-5.6, Claude Sonnet 5, Opus 5, Opus 4.8, Sonnet 4.6, and Haiku 4.5 only when already selected in the shop, preserving all previous legacy selections.
+- Use Claude Haiku 5.5 as the Anthropic fallback when no model is configured; keep GPT-6 Luna as the OpenAI default.
+- Increase output limits for both providers to 16,000 tokens for translation and 4,096 tokens for SEO regeneration.
+- Document that the API connection test checks model catalog access rather than generating content.
+
+### Fixed
+
+- Reject responses stopped by token limits, context exhaustion, or provider refusal/filtering before their content is used. Reject non-text OpenAI response content.
+- Align module Apache access rules with the packaging template and use Apache 2.4 authorization syntax.
+
+---
+
 ## [1.1.5] — 2026-09-25
 
 ### Added

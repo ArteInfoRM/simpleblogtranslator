@@ -158,10 +158,11 @@
 <hr>
 <h2>Supported models</h2>
 <h3>OpenAI</h3>
-<p><code>gpt-6-luna</code> · <code>gpt-6-sol</code> · <code>gpt-6-astra</code> · <code>gpt-5.6-luna</code> · <code>gpt-5.6-sol</code> · <code>gpt-5.6-terra</code></p>
+<p><code>gpt-6-luna</code> · <code>gpt-6.1-sol</code> · <code>gpt-6-astra</code></p>
 <h3>Anthropic</h3>
-<p><code>claude-sonnet-5</code> · <code>claude-opus-5-5</code> · <code>claude-fable-5-1</code> · <code>claude-opus-5</code> · <code>claude-opus-4-8</code> · <code>claude-sonnet-4-6</code> · <code>claude-haiku-4-5-20251001</code></p>
-<p>New OpenAI configurations default to <code>gpt-6-luna</code>. Older GPT-5.4, GPT-5.5, Claude Fable 5, and Claude Opus 4.7 selections remain visible only when already configured. Model availability depends on the provider account.</p>
+<p><code>claude-haiku-5-5</code> · <code>claude-sonnet-5-5</code> · <code>claude-opus-5-5</code> · <code>claude-fable-5-1</code></p>
+<p>Configurations without a saved model use <code>gpt-6-luna</code> for OpenAI or <code>claude-haiku-5-5</code> for Anthropic. Previously offered GPT-6 Sol, GPT-5.6, GPT-5.5, GPT-5.4, Claude Sonnet 5, Opus 5, Opus 4.8, Sonnet 4.6, Haiku 4.5, Fable 5, and Opus 4.7 selections remain visible only while already configured in the shop. Model availability depends on the provider account.</p>
+<p>Both providers allow up to 16,000 output tokens for translation and 4,096 for SEO regeneration to leave room for reasoning and longer translated content. These are request ceilings, not guaranteed output lengths. Responses stopped by token limits, context exhaustion, or provider refusal/filtering are rejected before their content is used. The API connection test checks model catalog access rather than generating content.</p>
 <hr>
 <h2>Security and release documentation</h2>
 <ul>

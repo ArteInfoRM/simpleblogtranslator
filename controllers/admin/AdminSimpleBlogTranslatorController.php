@@ -725,7 +725,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
     {
         $payloadArr = [
             'model' => $model,
-            'max_completion_tokens' => 2000,
+            'max_completion_tokens' => 4096,
             'response_format' => ['type' => 'json_object'],
             'messages' => [
                 ['role' => 'user', 'content' => $userPrompt],
@@ -769,9 +769,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
         }
 
         $decoded = json_decode($response, true);
-        return isset($decoded['choices'][0]['message']['content'])
-            ? $decoded['choices'][0]['message']['content']
-            : false;
+        return $this->extractOpenAiText($decoded);
     }
 
     /* ================================================================== */
@@ -967,7 +965,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
 
         $payload = json_encode([
             'model' => $model,
-            'max_tokens' => 4096,
+            'max_tokens' => 16000,
             'system' => $systemPrompt,
             'messages' => [
                 ['role' => 'user', 'content' => $content],
@@ -1027,7 +1025,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
     {
         $payload = json_encode([
             'model' => $model,
-            'max_tokens' => 2000,
+            'max_tokens' => 4096,
             'messages' => [
                 ['role' => 'user', 'content' => $userPrompt],
             ],
@@ -1110,6 +1108,11 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
             return false;
         }
 
+        if (in_array($response['stop_reason'] ?? null, ['max_tokens', 'model_context_window_exceeded', 'refusal'], true)) {
+            $this->lastApiError = 'Anthropic did not return a complete response.';
+            return false;
+        }
+
         $text = '';
         foreach ($response['content'] as $block) {
             if (is_array($block) && isset($block['type'], $block['text']) && $block['type'] === 'text' && is_string($block['text'])) {
@@ -1118,6 +1121,29 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
         }
 
         return $text !== '' ? $text : false;
+    }
+
+    /**
+     * Read text only from a complete OpenAI chat completion.
+     *
+     * @param array<string, mixed>|null $response Decoded OpenAI response
+     *
+     * @return string|false
+     */
+    private function extractOpenAiText($response)
+    {
+        if (!is_array($response) || !isset($response['choices'][0]) || !is_array($response['choices'][0])) {
+            return false;
+        }
+        $choice = $response['choices'][0];
+        if (in_array($choice['finish_reason'] ?? null, ['length', 'content_filter'], true)) {
+            $this->lastApiError = 'OpenAI did not return a complete response.';
+            return false;
+        }
+
+        $text = $choice['message']['content'] ?? null;
+
+        return is_string($text) && $text !== '' ? $text : false;
     }
 
     /* ================================================================== */
@@ -1134,7 +1160,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
 
         $payloadArr = [
             'model' => $model,
-            'max_completion_tokens' => 4096,
+            'max_completion_tokens' => 16000,
             'messages' => [
                 ['role' => 'system', 'content' => $systemPrompt],
                 ['role' => 'user', 'content' => $content],
@@ -1180,9 +1206,7 @@ class AdminSimpleBlogTranslatorController extends ModuleAdminController
 
         $decoded = json_decode($response, true);
 
-        return isset($decoded['choices'][0]['message']['content'])
-            ? $decoded['choices'][0]['message']['content']
-            : false;
+        return $this->extractOpenAiText($decoded);
     }
 
 }

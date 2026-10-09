@@ -117,6 +117,24 @@
 <p>All notable changes to <strong>SimpleBlog Translator</strong> are documented in this file.</p>
 <p>The format follows <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a>. Versioning follows <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <hr>
+<h2>[1.1.6] - 2026-10-09</h2>
+<h3>Added</h3>
+<ul>
+<li>Added GPT-6.1 Sol, Claude Sonnet 5.5, and Claude Haiku 5.5 to the curated AI model selector.</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Offer GPT-6 Sol, GPT-5.6, Claude Sonnet 5, Opus 5, Opus 4.8, Sonnet 4.6, and Haiku 4.5 only when already selected in the shop, preserving all previous legacy selections.</li>
+<li>Use Claude Haiku 5.5 as the Anthropic fallback when no model is configured; keep GPT-6 Luna as the OpenAI default.</li>
+<li>Increase output limits for both providers to 16,000 tokens for translation and 4,096 tokens for SEO regeneration.</li>
+<li>Document that the API connection test checks model catalog access rather than generating content.</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Reject responses stopped by token limits, context exhaustion, or provider refusal/filtering before their content is used. Reject non-text OpenAI response content.</li>
+<li>Align module Apache access rules with the packaging template and use Apache 2.4 authorization syntax.</li>
+</ul>
+<hr>
 <h2>[1.1.5] — 2026-09-25</h2>
 <h3>Added</h3>
 <ul>

@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:332c724f-6f7f-4341-837b-b0c3f7cac51a",
-  "version": 2,
+  "serialNumber": "urn:uuid:1ce05353-9d96-4b22-8498-f3354d0f4f76",
+  "version": 3,
   "metadata": {
-    "timestamp": "2026-09-25T00:00:00Z",
+    "timestamp": "2026-10-09T08:27:43Z",
     "tools": {
       "components": [
         {
@@ -17,12 +17,12 @@
     },
     "component": {
       "type": "application",
-      "bom-ref": "pkg:generic/arteinformatica/simpleblogtranslator@1.1.5",
+      "bom-ref": "pkg:generic/arteinformatica/simpleblogtranslator@1.1.6",
       "supplier": {
         "name": "Arte e Informatica di Loris Modena e C. s.a.s."
       },
       "name": "simpleblogtranslator",
-      "version": "1.1.5",
+      "version": "1.1.6",
       "description": "AI translation module for PrestaHome SimpleBlog articles.",
       "licenses": [
         {
@@ -31,7 +31,7 @@
           }
         }
       ],
-      "purl": "pkg:generic/arteinformatica/simpleblogtranslator@1.1.5"
+      "purl": "pkg:generic/arteinformatica/simpleblogtranslator@1.1.6"
     }
   },
   "components": [],
